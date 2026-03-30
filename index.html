@@ -1914,7 +1914,178 @@ function saveNotes() {
   if (currentStudentIdx === null) return;
   students[currentStudentIdx].notes = document.getElementById('teacherNotes').value;
 }
-function printProfile() { window.print(); }
+function printProfile() {
+  if (currentStudentIdx === null) { alert('Please select a student first.'); return; }
+  const s     = students[currentStudentIdx];
+  const cross = getCrossLevel(s);
+
+  // ── Self-contained SVG badge generator ──
+  const _SP = "20,1.5 24.8,8.4 33.1,6.9 31.6,15.2 38.5,20 31.6,24.8 33.1,33.1 24.8,31.6 20,38.5 15.2,31.6 6.9,33.1 8.4,24.8 1.5,20 8.4,15.2 6.9,6.9 15.2,8.4";
+  const mkBadge = (color, sz) =>
+    `<svg viewBox="0 0 40 40" width="${sz}" height="${sz}" xmlns="http://www.w3.org/2000/svg">` +
+    `<polygon points="${_SP}" fill="${color}"/>` +
+    `<circle cx="20" cy="20" r="13" fill="white" opacity="0.32"/>` +
+    `<circle cx="20" cy="20" r="10" fill="${color}"/>` +
+    `<circle cx="20" cy="20" r="10" fill="white" opacity="0.15"/></svg>`;
+
+  // ── Computed stats ──
+  const totalEvidence  = s.evidence.reduce((sum, arr) => sum + (arr||[]).length, 0);
+  const advancedCount  = s.pogs.filter(p => p >= 4).length;
+  const selectedSkills = Object.values(s.skills||{}).filter(v => v==='Selected'||v==='Always').length;
+  const gradYear       = 2025 + (13 - parseInt(s.grade||12));
+
+  // ── Parse homeroom "Room 214 — Ms. Rivera" ──
+  const hParts     = (s.homeroom||'').split('—').map(x => x.trim());
+  const roomStr    = hParts[0] || '';
+  const teacherStr = hParts[1] || '';
+
+  // ── Per-POG palette ──
+  const CBORDER = ['#C49A00','#1565C0','#2E7D32','#6A1B9A','#8C1A1A'];
+  const CBGCARD = ['#FFFDF5','#EFF4FF','#F2FBF2','#F9F0FF','#FFF2F2'];
+  const STATUS_LABEL = ['','JUST STARTING','GROWING','ON TRACK','ON TRACK','EXCEEDING'];
+  const STATUS_COLOR = ['','#6B7280','#D97706','#16A34A','#16A34A','#7C3AED'];
+  const STATUS_BG    = ['','#F3F4F6','#FEF3C7','#DCFCE7','#DCFCE7','#EDE9FE'];
+
+  // ── Growth highlights ──
+  const growthItems = [];
+  if (s.notes) s.notes.split(/[.!?]/).map(n=>n.trim()).filter(n=>n.length>15).slice(0,2).forEach(n=>growthItems.push(n));
+  s.pogs.forEach((lv, pi) => {
+    if (lv >= 4 && s.evidence[pi] && s.evidence[pi].length > 0) {
+      const short = s.evidence[pi][0].description.split('.')[0].trim();
+      if (short.length > 10 && short.length < 90 && !growthItems.find(g => g.startsWith(short.slice(0,20))))
+        growthItems.push(short);
+    }
+  });
+  if (!growthItems.length) growthItems.push('No growth notes yet — add teacher notes in the student profile.');
+
+  // ── Next steps (lowest 3 POGs) ──
+  const nextSteps = [...s.pogs.entries()].sort((a,b)=>a[1]-b[1]).slice(0,3)
+    .map(([pi]) => { const a = cross[pi].action; return a.length > 95 ? a.slice(0,95)+'…' : a; });
+
+  // ── 5 POG attribute cards ──
+  const pogCards = POGS.map((pog, pi) => {
+    const lv     = s.pogs[pi];
+    const evList = s.evidence[pi] || [];
+    const hiItems = evList.slice(0,2).map(ev => {
+      const t = ev.description.length > 58 ? ev.description.slice(0,58)+'…' : ev.description;
+      return `<li style="margin-bottom:3px;">${t}</li>`;
+    }).join('');
+    const sLabel = STATUS_LABEL[lv]||'JUST STARTING', sColor = STATUS_COLOR[lv]||'#6B7280', sBg = STATUS_BG[lv]||'#F3F4F6';
+    return `<div style="flex:1;background:${CBGCARD[pi]};border:2px solid ${CBORDER[pi]};border-radius:12px;padding:12px 9px;display:flex;flex-direction:column;align-items:center;text-align:center;min-width:0;">
+      <div style="font-size:0.75rem;font-weight:900;color:${CBORDER[pi]};line-height:1.25;min-height:2.6em;display:flex;align-items:center;justify-content:center;margin-bottom:7px;">${pog.name}</div>
+      <div>${mkBadge(POG_BADGE_COLORS[pi], 70)}</div>
+      <div style="font-size:0.63rem;font-weight:800;color:${LEVEL_COLORS[lv]||'#999'};letter-spacing:0.08em;text-transform:uppercase;margin:5px 0 3px;">${LEVELS[lv]||'NOT STARTED'}</div>
+      <div style="font-size:0.61rem;color:#6B7280;margin-bottom:6px;">📎 ${evList.length>0?`${evList.length} piece${evList.length!==1?'s':''} of evidence`:'No evidence yet'}</div>
+      ${hiItems?`<div style="text-align:left;width:100%;margin-bottom:6px;flex:1;"><div style="font-size:0.58rem;font-weight:900;letter-spacing:0.07em;text-transform:uppercase;color:#374151;margin-bottom:3px;">HIGHLIGHTS</div><ul style="padding-left:13px;margin:0;font-size:0.6rem;color:#374151;line-height:1.55;">${hiItems}</ul></div>`:`<div style="flex:1;"></div>`}
+      <div style="margin-top:auto;padding-top:6px;width:100%;"><span style="background:${sBg};color:${sColor};border:1.5px solid ${sColor};border-radius:20px;padding:4px 9px;font-size:0.59rem;font-weight:800;letter-spacing:0.06em;">${lv>=3?'✓':'ℹ'} ${sLabel}</span></div>
+    </div>`;
+  }).join('');
+
+  const pseudoId = String(100000 + currentStudentIdx * 7239 + 345).slice(-6);
+
+  const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<title>POG Profile — ${s.name}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,Helvetica,sans-serif;background:#e5e7eb;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.page{width:8.5in;background:#fff;margin:0 auto;overflow:hidden;}
+.pbar{position:fixed;top:0;left:0;right:0;background:#7B1113;color:#fff;padding:9px 24px;display:flex;align-items:center;justify-content:space-between;z-index:999;}
+.pbar span{font-size:0.85rem;font-weight:600;}
+.pbar button{background:#fff;color:#7B1113;border:none;border-radius:6px;padding:6px 18px;font-weight:800;cursor:pointer;font-size:0.85rem;}
+@media print{body{background:#fff;}.pbar{display:none!important;}.page{width:100%;padding-top:0!important;}@page{size:letter portrait;margin:0.2in;}}
+</style></head><body>
+<div class="pbar"><span>POG Profile — ${s.name}</span><button onclick="window.print()">🖨 Print / Save as PDF</button></div>
+<div class="page" style="padding-top:42px;">
+
+  <!-- HEADER -->
+  <div style="display:flex;align-items:center;gap:16px;padding:16px 26px 14px;border-bottom:3px solid #7B1113;">
+    <div style="width:66px;height:66px;flex-shrink:0;border-radius:50%;background:#7B1113;border:3px solid #C49A00;color:#fff;font-size:2rem;font-weight:900;display:flex;align-items:center;justify-content:center;">${s.name[0].toUpperCase()}</div>
+    <div style="flex:1;">
+      <div style="font-size:1.8rem;font-weight:900;color:#111;letter-spacing:0.02em;line-height:1.05;">${s.name.toUpperCase()}</div>
+      <div style="font-size:0.78rem;color:#555;margin-top:4px;">Grade ${s.grade}&nbsp;&nbsp;•&nbsp;&nbsp;${roomStr}&nbsp;&nbsp;•&nbsp;&nbsp;${teacherStr}&nbsp;&nbsp;•&nbsp;&nbsp;Class of ${gradYear}</div>
+    </div>
+    <div style="text-align:right;flex-shrink:0;">
+      <img src="https://i.imgur.com/uDcaTSg.png" alt="MHS" style="height:54px;object-fit:contain;" onerror="this.style.display='none'">
+      <div style="font-size:0.58rem;font-weight:700;color:#7B1113;text-transform:uppercase;letter-spacing:0.05em;margin-top:3px;">Strong Schools, Stronger Communities</div>
+    </div>
+  </div>
+
+  <!-- BANNER -->
+  <div style="background:#7B1113;padding:13px 26px;display:flex;align-items:center;justify-content:space-between;">
+    <div><span style="font-size:1.05rem;font-weight:900;color:#fff;letter-spacing:0.13em;text-transform:uppercase;">PORTRAIT OF A GRADUATE </span><span style="font-size:1.05rem;font-weight:700;color:#C49A00;letter-spacing:0.13em;text-transform:uppercase;">PROFILE SNAPSHOT</span></div>
+    <div style="width:58px;height:58px;background:radial-gradient(circle at 38% 32%,#e8c840,#C49A00);border-radius:50%;border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,0.35);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;">
+      <div style="font-size:0.44rem;color:#fff;letter-spacing:0.08em;font-weight:800;">★ ★ ★</div>
+      <div style="font-size:1rem;font-weight:900;color:#fff;line-height:1;margin-top:1px;">POG</div>
+    </div>
+  </div>
+
+  <!-- META -->
+  <div style="display:flex;gap:32px;padding:9px 28px 8px;border-bottom:1px solid #E5E7EB;font-size:0.78rem;color:#374151;align-items:center;">
+    <span>👤 <strong>Student ID:</strong> ${pseudoId}</span>
+    <span>📅 <strong>Graduation Year:</strong> ${gradYear}</span>
+    <span>📌 <strong>Marking Period:</strong> ${s.mp}</span>
+    <span style="margin-left:auto;font-size:0.68rem;color:#9CA3AF;">Generated ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
+  </div>
+
+  <!-- STATS -->
+  <div style="display:flex;gap:10px;padding:11px 24px 9px;">
+    <div style="flex:1;border:1.5px solid #D1D5DB;border-radius:10px;padding:9px 12px;display:flex;align-items:center;gap:10px;">
+      <img src="https://i.imgur.com/WlIcV7i.png" width="32" height="32" style="flex-shrink:0;object-fit:contain;" alt="Evidence icon">
+      <div><div style="font-size:1.55rem;font-weight:900;color:#111;line-height:1;">${totalEvidence}</div><div style="font-size:0.59rem;color:#6B7280;line-height:1.35;margin-top:1px;">Total Pieces<br>of Evidence</div></div>
+    </div>
+    <div style="flex:1;border:1.5px solid #C49A00;border-radius:10px;padding:9px 12px;background:#FFFDF5;display:flex;align-items:center;gap:10px;">
+      <img src="https://i.imgur.com/nDxGbK1.png" width="32" height="32" style="flex-shrink:0;object-fit:contain;" alt="Star icon">
+      <div><div style="font-size:1.55rem;font-weight:900;color:#111;line-height:1;">${advancedCount}</div><div style="font-size:0.59rem;color:#6B7280;line-height:1.35;margin-top:1px;">Advanced<br>Attributes</div></div>
+    </div>
+    <div style="flex:1;border:1.5px solid #2E7D32;border-radius:10px;padding:9px 12px;background:#F2FBF2;display:flex;align-items:center;gap:10px;">
+      <img src="https://i.imgur.com/t4NGA71.png" width="32" height="32" style="flex-shrink:0;object-fit:contain;" alt="Xello icon">
+      <div><div style="font-size:1.55rem;font-weight:900;color:#111;line-height:1;">${selectedSkills}</div><div style="font-size:0.59rem;color:#6B7280;line-height:1.35;margin-top:1px;">Xello Skills<br>Identified</div></div>
+    </div>
+    <div style="flex:1;border:1.5px solid #1565C0;border-radius:10px;padding:9px 12px;background:#EFF4FF;display:flex;align-items:center;gap:10px;">
+      <img src="https://i.imgur.com/fdNHbyw.png" width="32" height="32" style="flex-shrink:0;object-fit:contain;" alt="Book icon">
+      <div><div style="font-size:1.55rem;font-weight:900;color:#111;line-height:1;">${totalEvidence+selectedSkills}</div><div style="font-size:0.59rem;color:#6B7280;line-height:1.35;margin-top:1px;">Learning<br>Experiences</div></div>
+    </div>
+  </div>
+
+  <!-- ATTRIBUTES TITLE -->
+  <div style="text-align:center;padding:7px 24px 5px;"><span style="font-size:0.7rem;font-weight:900;color:#7B1113;letter-spacing:0.16em;text-transform:uppercase;">Portrait of a Graduate Attributes</span></div>
+
+  <!-- POG CARDS -->
+  <div style="display:flex;gap:7px;padding:0 14px 10px;">${pogCards}</div>
+
+  <!-- BOTTOM ROW -->
+  <div style="display:flex;gap:10px;padding:0 14px 14px;align-items:stretch;">
+    <div style="flex:1;border:1.5px solid #E5E7EB;border-radius:10px;padding:12px 15px;">
+      <div style="font-size:0.66rem;font-weight:900;color:#7B1113;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:7px;display:flex;align-items:center;gap:7px;">
+        <span style="width:19px;height:19px;background:#7B1113;border-radius:50%;color:#fff;font-size:0.6rem;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">🌱</span> Growth Highlights
+      </div>
+      <ul style="padding-left:15px;font-size:0.66rem;color:#374151;line-height:1.8;margin:0;">${growthItems.slice(0,4).map(h=>`<li>${h}</li>`).join('')}</ul>
+    </div>
+    <div style="flex:1;border:1.5px solid #E5E7EB;border-radius:10px;padding:12px 15px;">
+      <div style="font-size:0.66rem;font-weight:900;color:#7B1113;text-transform:uppercase;letter-spacing:0.09em;margin-bottom:7px;display:flex;align-items:center;gap:7px;">
+        <span style="width:19px;height:19px;background:#C49A00;border-radius:50%;color:#fff;font-size:0.6rem;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">🎯</span> Next Steps
+      </div>
+      <ul style="padding-left:15px;font-size:0.66rem;color:#374151;line-height:1.8;margin:0;">${nextSteps.map(a=>`<li>${a}</li>`).join('')}</ul>
+    </div>
+    <div style="width:128px;flex-shrink:0;border:2px solid #7B1113;border-radius:10px;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#FFF5F5;text-align:center;">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=88x88&color=7B1113&bgcolor=fff5f5&data=${encodeURIComponent('https://muskegonhs.org/pog/'+s.name.toLowerCase().replace(/ /g,'-'))}" width="88" height="88" style="border-radius:4px;" onerror="this.style.display='none'">
+      <div style="font-size:0.61rem;font-weight:800;color:#7B1113;margin-top:7px;line-height:1.35;">View Full Digital Profile</div>
+      <div style="font-size:0.53rem;color:#9CA3AF;margin-top:2px;">muskegonhs.org/pog</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div style="background:#7B1113;border-top:3px solid #C49A00;padding:10px 24px;text-align:center;">
+    <span style="font-size:0.67rem;font-weight:800;color:#fff;letter-spacing:0.22em;text-transform:uppercase;">Ready &nbsp;•&nbsp; Resilient &nbsp;•&nbsp; Responsible &nbsp;•&nbsp; Prepared</span>
+  </div>
+
+</div></body></html>`;
+
+  const win = window.open('', '_blank', 'width=960,height=780');
+  if (!win) { alert('Pop-up blocked — please allow pop-ups for this page and try again.'); return; }
+  win.document.write(html);
+  win.document.close();
+}
 
 // ─── STATS ────────────────────────────────────────────────
 function updateStats() {
@@ -2291,4 +2462,3 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
