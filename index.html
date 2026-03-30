@@ -505,7 +505,7 @@
 
     <div class="grid-2">
       <div class="card">
-        <h2>🎯 The Five POGs</h2>
+        <h2> The Five POGs</h2>
         <p style="font-size:0.82rem;color:var(--gray-600);margin-bottom:14px;">Click a POG to jump to its rubric details.</p>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div class="pog-card" onclick="showView('rubric');highlightPog(0)">
@@ -537,7 +537,7 @@
       </div>
 
       <div class="card">
-        <h2>📈 Class Alignment Snapshot</h2>
+        <h2>Class Alignment Snapshot</h2>
         <div id="snapshot-container">
           <p style="font-size:0.83rem;color:var(--gray-600);">Add students in the <strong>Students</strong> tab to see class-wide data.</p>
         </div>
@@ -575,7 +575,7 @@
 
     <!-- Bulk Import Banner -->
     <div class="card" id="importBanner">
-      <h2>📥 Bulk Import Students from CSV</h2>
+      <h2>Bulk Import Students from CSV</h2>
       <div class="grid-2" style="gap:24px;align-items:start;">
         <div>
           <p style="font-size:0.83rem;color:var(--gray-600);margin-bottom:12px;">
@@ -586,17 +586,17 @@
                ondragleave="this.classList.remove('drag-over')"
                ondrop="handleFileDrop(event)">
             <input type="file" accept=".csv" onchange="handleFileSelect(event)" />
-            <div class="upload-icon">📂</div>
+            <div class="upload-icon"></div>
             <div class="upload-title">Drop your CSV here or click to browse</div>
             <div class="upload-sub">Accepts .csv files · Up to 500 students</div>
           </div>
           <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn btn-gold btn-sm" onclick="downloadTemplate()">⬇️ Download CSV Template</button>
+            <button class="btn btn-gold btn-sm" onclick="downloadTemplate()">Download CSV Template</button>
             <button class="btn btn-outline btn-sm" onclick="document.getElementById('importBanner').style.display='none'">Hide Import Panel</button>
           </div>
         </div>
         <div>
-          <h3 style="margin-bottom:8px;">📋 Required CSV Format</h3>
+          <h3 style="margin-bottom:8px;">Required CSV Format</h3>
           <div class="template-box">Name,Grade,Skill 1,Skill 2,Skill 3,...,Skill 10
 
 Jordan Smith,11,Time Management,Helping People,Listening,Problem Solving,...
@@ -611,7 +611,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
     <div class="card">
       <h2>👥 Student Roster</h2>
       <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="🔍 Search by name or grade…" oninput="renderStudentTable()" />
+        <input type="text" id="searchInput" placeholder="Search by name or grade…" oninput="renderStudentTable()" />
         <select id="filterGrade" onchange="renderStudentTable()">
           <option value="">All Grades</option>
           <option value="9">Grade 9</option>
@@ -627,11 +627,11 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
           <thead>
             <tr>
               <th>Name</th><th>Grade</th>
-              <th title="Persistent Professional">◆ PP</th>
-              <th title="Collaborator">● CRB</th>
-              <th title="Creative Problem Solver">▲ CPS</th>
-              <th title="Adaptable Communicator">◀ AC</th>
-              <th title="Responsible Citizen">★ RC</th>
+              <th title="Persistent Professional">PP</th>
+              <th title="Collaborator">C</th>
+              <th title="Creative Problem Solver">CPS</th>
+              <th title="Adaptable Communicator">AC</th>
+              <th title="Responsible Citizen">RC</th>
               <th>Avg Level</th><th>Progression</th><th>Action</th>
             </tr>
           </thead>
@@ -644,7 +644,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
   <!-- ── VIEW: STUDENT PROFILE ────────────────────────────── -->
   <div id="view-profile" class="view">
     <div id="profileSelectMsg" class="card">
-      <h2>🎓 Student Profile</h2>
+      <h2>Student Profile</h2>
       <p style="color:var(--gray-600);font-size:0.88rem;">Select a student from the <strong>Students</strong> tab to view their full profile and POG × Skills Lab crosswalk.</p>
     </div>
     <div id="profileContent" style="display:none;">
@@ -656,9 +656,8 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
           <div style="font-size:0.82rem;color:var(--gray-600);" id="profileMeta">—</div>
         </div>
         <div style="margin-left:auto;display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn btn-gold btn-sm" onclick="openEditModal()">✏️ Edit POG Ratings</button>
-          <button class="btn btn-outline btn-sm" onclick="openSkillsModal()">📊 Enter Skills Lab Data</button>
-          <button class="btn btn-outline btn-sm" onclick="printProfile()">🖨️ Print Report</button>
+          <button class="btn btn-gold btn-sm" onclick="openEditModal()">Edit POG Ratings</button>
+          <button class="btn btn-outline btn-sm" onclick="printProfile()">🖨️ Print Profile</button>
         </div>
       </div>
 
@@ -687,7 +686,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 
       <!-- Notes -->
       <div class="card">
-        <h2>📝 Teacher Notes</h2>
+        <h2>Teacher Notes</h2>
         <textarea id="teacherNotes" rows="4" placeholder="Enter observations, coaching notes, or follow-up goals for this student…" oninput="saveNotes()"></textarea>
         <div style="margin-top:8px;font-size:0.75rem;color:var(--gray-400);">Notes auto-save to this session.</div>
       </div>
@@ -706,10 +705,10 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
         <h2>◆ Persistent Professional</h2>
         <table class="crosswalk-table">
           <tr><th>Skills Lab Skill</th><th>What it Signals</th></tr>
-          <tr><td>⏰ Time Management</td><td>Wants to plan and meet deadlines</td></tr>
-          <tr><td>📋 Organization</td><td>Values structure and order</td></tr>
-          <tr><td>🔍 Attention to Detail</td><td>Cares about quality, not just completion</td></tr>
-          <tr><td>✅ Responsibility</td><td>Owns outcomes — positive or negative</td></tr>
+          <tr><td>Time Management</td><td>Wants to plan and meet deadlines</td></tr>
+          <tr><td>Organization</td><td>Values structure and order</td></tr>
+          <tr><td>Attention to Detail</td><td>Cares about quality, not just completion</td></tr>
+          <tr><td>Responsibility</td><td>Owns outcomes — positive or negative</td></tr>
         </table>
         <div class="prompt-box">
           <strong>Monitor:</strong> Does the student value consistency and follow-through? If they rate these skills "Always" but struggle to meet deadlines, that's your coaching window.
@@ -717,13 +716,13 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
       </div>
 
       <div class="card">
-        <h2>● Collaborator</h2>
+        <h2>Collaborator</h2>
         <table class="crosswalk-table">
           <tr><th>Skills Lab Skill</th><th>What it Signals</th></tr>
-          <tr><td>👥 Teamwork</td><td>Prefers working with others toward shared goals</td></tr>
-          <tr><td>👂 Active Listening</td><td>Values hearing others before responding</td></tr>
-          <tr><td>🤲 Cooperation</td><td>Willing to compromise and support group</td></tr>
-          <tr><td>🙌 Helping Others</td><td>Motivated by service and support</td></tr>
+          <tr><td>Teamwork</td><td>Prefers working with others toward shared goals</td></tr>
+          <tr><td>Active Listening</td><td>Values hearing others before responding</td></tr>
+          <tr><td>Cooperation</td><td>Willing to compromise and support group</td></tr>
+          <tr><td>Helping Others</td><td>Motivated by service and support</td></tr>
         </table>
         <div class="prompt-box">
           <strong>Monitor:</strong> Do they want to work with others? A student who rates Teamwork "Always" but avoids group work needs a safe space to explore that gap.
@@ -731,13 +730,13 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
       </div>
 
       <div class="card">
-        <h2>▲ Creative Problem Solver</h2>
+        <h2>Creative Problem Solver</h2>
         <table class="crosswalk-table">
           <tr><th>Skills Lab Skill</th><th>What it Signals</th></tr>
-          <tr><td>🧩 Problem Solving</td><td>Enjoys figuring things out independently</td></tr>
-          <tr><td>🧠 Critical Thinking</td><td>Questions assumptions and analyzes deeply</td></tr>
-          <tr><td>🎨 Creativity</td><td>Wants to express original ideas</td></tr>
-          <tr><td>🚀 Innovation</td><td>Drawn to doing things in new ways</td></tr>
+          <tr><td>Problem Solving</td><td>Enjoys figuring things out independently</td></tr>
+          <tr><td>Critical Thinking</td><td>Questions assumptions and analyzes deeply</td></tr>
+          <tr><td>Creativity</td><td>Wants to express original ideas</td></tr>
+          <tr><td>Innovation</td><td>Drawn to doing things in new ways</td></tr>
         </table>
         <div class="prompt-box">
           <strong>Monitor:</strong> Do they value figuring things out vs. being told? Student rates Creativity high but never proposes ideas in class? Set a project-based goal.
@@ -745,13 +744,13 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
       </div>
 
       <div class="card">
-        <h2>◀ Adaptable Communicator</h2>
+        <h2>Adaptable Communicator</h2>
         <table class="crosswalk-table">
           <tr><th>Skills Lab Skill</th><th>What it Signals</th></tr>
-          <tr><td>💬 Verbal Communication</td><td>Comfortable expressing ideas out loud</td></tr>
-          <tr><td>✍️ Written Communication</td><td>Values clear written expression</td></tr>
-          <tr><td>🔄 Flexibility</td><td>Adapts approach based on audience or context</td></tr>
-          <tr><td>📢 Presentation</td><td>Wants to share ideas with groups</td></tr>
+          <tr><td>Verbal Communication</td><td>Comfortable expressing ideas out loud</td></tr>
+          <tr><td>Written Communication</td><td>Values clear written expression</td></tr>
+          <tr><td>Flexibility</td><td>Adapts approach based on audience or context</td></tr>
+          <tr><td>Presentation</td><td>Wants to share ideas with groups</td></tr>
         </table>
         <div class="prompt-box">
           <strong>Monitor:</strong> Do they want to express ideas and adjust messaging? Great writers who avoid verbal presentations — or vice versa — show you where to stretch.
@@ -759,14 +758,14 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
       </div>
 
       <div class="card" style="grid-column: 1 / -1;">
-        <h2>★ Responsible Citizen</h2>
+        <h2>Responsible Citizen</h2>
         <div class="grid-2">
           <table class="crosswalk-table">
             <tr><th>Skills Lab Skill</th><th>What it Signals</th></tr>
-            <tr><td>⚖️ Integrity</td><td>Acts consistently with values, even when hard</td></tr>
-            <tr><td>🙌 Helping Others</td><td>Driven by service to community</td></tr>
-            <tr><td>🛡️ Dependability</td><td>Others can count on them</td></tr>
-            <tr><td>🏘️ Community Awareness</td><td>Thinks beyond self; considers impact</td></tr>
+            <tr><td>Integrity</td><td>Acts consistently with values, even when hard</td></tr>
+            <tr><td>Helping Others</td><td>Driven by service to community</td></tr>
+            <tr><td>Dependability</td><td>Others can count on them</td></tr>
+            <tr><td>Community Awareness</td><td>Thinks beyond self; considers impact</td></tr>
           </table>
           <div class="prompt-box" style="margin:0;">
             <strong>Monitor:</strong> Do they value impact beyond themselves? A student who rates "Helping Others" highly but never volunteers for classroom leadership — what's the barrier?
@@ -776,7 +775,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
     </div>
 
     <div class="card">
-      <h2>🔑 The 5-Level POG Progression Scale</h2>
+      <h2>The 5-Level POG Progression Scale</h2>
       <p style="font-size:0.83rem;color:var(--gray-600);margin-bottom:16px;">Every student is on a growth journey. These levels describe where they are — not a ceiling, but a starting point for the next conversation.</p>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;">
         <div style="padding:14px;background:#F0F3F4;border-radius:10px;border-top:4px solid #7F8C8D;text-align:center;">
@@ -814,7 +813,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
   <!-- ── VIEW: POG RUBRIC ─────────────────────────────────── -->
   <div id="view-rubric" class="view">
     <div class="alert alert-info">
-      📋 <span>The rubric below describes observable behaviors for each POG across the <strong>5-level progression: Emerging → Developing → Proficient → Advanced → Transformative</strong>. Teachers use this to assign POG levels each marking period. <strong>Update descriptors with exact language from your Muskegon DRAFT spreadsheet.</strong></span>
+      <span>The rubric below describes observable behaviors for each POG across the <strong>5-level progression: Emerging → Developing → Proficient → Advanced → Transformative</strong>. Teachers use this to assign POG levels each marking period. <strong>Update descriptors with exact language from your Muskegon DRAFT spreadsheet.</strong></span>
     </div>
 
     <div id="rubric-sections"></div>
@@ -825,7 +824,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 
     <div class="grid-2">
       <div class="card">
-        <h2>📅 Marking Period Workflow</h2>
+        <h2>Marking Period Workflow</h2>
         <ol style="font-size:0.85rem;line-height:2;color:var(--gray-800);padding-left:18px;">
           <li>Students complete <strong>Xello Skills Lab</strong> (once at start of year, re-take optional)</li>
           <li>Teacher observes student behaviors and assigns a <strong>POG level (1 Emerging → 5 Transformative)</strong> each marking period</li>
@@ -836,7 +835,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
       </div>
 
       <div class="card">
-        <h2>💬 Sample Teacher Prompts</h2>
+        <h2>Sample Teacher Prompts</h2>
         <div style="display:flex;flex-direction:column;gap:10px;font-size:0.83rem;">
           <div class="prompt-box">"I see you rated <em>Teamwork</em> as something you want to use often, but your Collaborator POG is still developing. Let's set one goal for how you can practice that this quarter."</div>
           <div class="prompt-box">"You consistently demonstrate strong organization skills — your Persistent Professional POG is one of your highlights. Have you thought about roles where that skill is central?"</div>
@@ -846,7 +845,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
     </div>
 
     <div class="card">
-      <h2>🏫 Xello Skills Lab — 35 Skills Reference</h2>
+      <h2>Xello Skills Lab — 35 Skills Reference</h2>
       <p style="font-size:0.82rem;color:var(--gray-600);margin-bottom:14px;">Students select their top skills from this list in Xello. Import them via CSV at the start of the year, or enter them manually via a student's profile. Selected skills are highlighted in the POG crosswalk to guide coaching.</p>
       <div style="display:flex;flex-wrap:wrap;gap:8px;" id="skillsLabChips"></div>
       <div style="margin-top:14px;" class="alert alert-gold">
@@ -855,7 +854,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
     </div>
 
     <div class="card">
-      <h2>🗂️ Export & Share</h2>
+      <h2>Export & Share</h2>
       <p style="font-size:0.83rem;color:var(--gray-600);margin-bottom:14px;">This tool stores data in your browser session. Use the buttons below to export reports.</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="exportCSV()">📥 Export Student Data (CSV)</button>
@@ -912,9 +911,9 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 <div class="modal-overlay" id="skillsModal">
   <div class="modal" style="max-width:680px;">
     <button class="modal-close" onclick="closeModal('skillsModal')">✕</button>
-    <h2>📊 Skills Lab Selections — <span id="skillsModalName"></span></h2>
+    <h2>Skills Lab Selections — <span id="skillsModalName"></span></h2>
     <div class="alert alert-info" style="margin-bottom:14px;font-size:0.80rem;">
-      📌 <span>Check the skills this student identified in Xello's Skills Lab as ones they want to use in their future career. Select up to 10. These show up in the POG crosswalk to guide coaching conversations.</span>
+      <span>Check the skills this student identified in Xello's Skills Lab as ones they want to use in their future career. Select up to 10. These show up in the POG crosswalk to guide coaching conversations.</span>
     </div>
     <div style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
       <span id="skillsSelectedCount" style="font-size:0.80rem;color:var(--gray-600);">0 selected</span>
@@ -929,16 +928,16 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 <div class="modal-overlay" id="importModal">
   <div class="modal" style="max-width:900px;width:95%;">
     <button class="modal-close" onclick="closeModal('importModal')">✕</button>
-    <h2>📥 Review Import — <span id="importFileLabel"></span></h2>
+    <h2>Review Import — <span id="importFileLabel"></span></h2>
 
     <div id="importStats" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;"></div>
 
     <div id="xelloBanner" style="display:none;background:#EBF5FB;border:1.5px solid #AED6F1;border-radius:8px;padding:11px 16px;margin-bottom:14px;font-size:0.82rem;color:#1A5276;">
-      🔄 <strong>Xello Skills Lab export detected!</strong> Automatically converted from tall format (one row per skill) to tracker format (one row per student). <span id="xelloBannerCount" style="opacity:0.8;"></span>
+      <strong>Xello Skills Lab export detected!</strong> Automatically converted from tall format (one row per skill) to tracker format (one row per student). <span id="xelloBannerCount" style="opacity:0.8;"></span>
     </div>
 
     <div class="alert alert-info" style="margin-bottom:14px;font-size:0.80rem;">
-      ✅ <span>Review the parsed data below. All POG levels will start at <strong>1 — Emerging</strong> (teachers set these manually). Skills Lab data is pre-loaded from your CSV. Unrecognized skill names are flagged in orange.</span>
+      <span>Review the parsed data below. All POG levels will start at <strong>1 — Emerging</strong> (teachers set these manually). Skills Lab data is pre-loaded from your CSV. Unrecognized skill names are flagged in orange.</span>
     </div>
 
     <div style="overflow-x:auto;max-height:400px;overflow-y:auto;">
@@ -972,18 +971,18 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
     <button class="modal-close" onclick="closeModal('evidenceModal')">✕</button>
     <h2>📎 Add Evidence — <span id="evidencePogLabel"></span></h2>
     <div class="alert alert-info" style="margin-bottom:16px;font-size:0.80rem;">
-      📌 <span>Evidence can be a description of something you observed, a project artifact, an assessment result, or a student reflection. Be specific — the more detail, the more useful it is for future conversations.</span>
+      <span>Evidence can be a description of something you observed, a project artifact, an assessment result, or a student reflection. Be specific — the more detail, the more useful it is for future conversations.</span>
     </div>
 
     <div class="form-group">
       <label>Evidence Type</label>
       <select id="evType">
-        <option value="Observation">👁️ Observation — teacher noted behavior in class</option>
-        <option value="Project">📁 Project — artifact from a class assignment or project</option>
-        <option value="Assessment">📝 Assessment — performance on a formal task</option>
-        <option value="Self-Reflection">💭 Self-Reflection — student's own written reflection</option>
-        <option value="Artifact">🖼️ Artifact — uploaded document, photo, or link</option>
-        <option value="Other">🔖 Other</option>
+        <option value="Observation">Observation — teacher noted behavior in class</option>
+        <option value="Project">Project — artifact from a class assignment or project</option>
+        <option value="Assessment">Assessment — performance on a formal task</option>
+        <option value="Self-Reflection">Self-Reflection — student's own written reflection</option>
+        <option value="Artifact">Artifact — uploaded document, photo, or link</option>
+        <option value="Other">Other</option>
       </select>
     </div>
 
@@ -1005,9 +1004,9 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
       <div class="form-group">
         <label>Added By</label>
         <select id="evAddedBy">
-          <option value="Teacher">👩‍🏫 Teacher</option>
-          <option value="Student">🎓 Student</option>
-          <option value="Counselor">🧭 Counselor</option>
+          <option value="Teacher">Teacher</option>
+          <option value="Student">Student</option>
+          <option value="Counselor">Counselor</option>
         </select>
       </div>
     </div>
@@ -1503,10 +1502,10 @@ function renderProfile(idx) {
       </div>
       <div style="font-size:0.75rem;color:${LEVEL_COLORS[level]};margin-bottom:10px;margin-top:14px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;">${LEVELS[level]}</div>
       <div class="progress-wrap" style="height:8px;"><div class="progress-bar" style="width:${pct}%;background:${LEVEL_COLORS[level]};border-radius:4px;"></div></div>
-      ${evCount > 0 ? `<div style="margin-top:10px;font-size:0.70rem;color:var(--gray-600);">📎 <strong>${evCount}</strong> piece${evCount!==1?'s':''} of evidence</div>` : ''}
+      ${evCount > 0 ? `<div style="margin-top:10px;font-size:0.70rem;color:var(--gray-600);"><strong>${evCount}</strong> piece${evCount!==1?'s':''} of evidence</div>` : ''}
       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
         <button class="evidence-toggle-btn" onclick="toggleEvidence(this)" data-pi="${pi}" style="flex:1;">
-          ${evCount > 0 ? `📂 View Evidence (${evCount})` : '📂 Evidence'}
+          ${evCount > 0 ? `View Evidence (${evCount})` : 'Evidence'}
         </button>
         <button class="btn btn-outline" onclick="openPOGDetail(${idx},${pi})" title="View full detail" style="padding:6px 12px;font-size:0.75rem;white-space:nowrap;border-color:var(--gray-300);color:var(--gray-600);">View Details →</button>
       </div>
@@ -2021,9 +2020,9 @@ body{font-family:'Segoe UI',Arial,Helvetica,sans-serif;background:#e5e7eb;-webki
 
   <!-- META -->
   <div style="display:flex;gap:32px;padding:9px 28px 8px;border-bottom:1px solid #E5E7EB;font-size:0.78rem;color:#374151;align-items:center;">
-    <span>👤 <strong>Student ID:</strong> ${pseudoId}</span>
-    <span>📅 <strong>Graduation Year:</strong> ${gradYear}</span>
-    <span>📌 <strong>Marking Period:</strong> ${s.mp}</span>
+    <span><strong>Student ID:</strong> ${pseudoId}</span>
+    <span><strong>Graduation Year:</strong> ${gradYear}</span>
+    <span><strong>Marking Period:</strong> ${s.mp}</span>
     <span style="margin-left:auto;font-size:0.68rem;color:#9CA3AF;">Generated ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
   </div>
 
