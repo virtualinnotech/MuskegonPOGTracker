@@ -677,7 +677,7 @@
 
     <div class="grid-2">
       <div class="card">
-        <h2>🎯 The Five POGs</h2>
+        <h2>The Five POGs</h2>
         <p style="font-size:0.82rem;color:var(--gray-600);margin-bottom:14px;">Click a POG to jump to its rubric details.</p>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div class="pog-card" onclick="showView('rubric');highlightPog(0)">
@@ -709,7 +709,7 @@
       </div>
 
       <div class="card">
-        <h2>📈 Class Alignment Snapshot</h2>
+        <h2>Class Alignment Snapshot</h2>
         <div id="snapshot-container">
           <p style="font-size:0.83rem;color:var(--gray-600);">Add students in the <strong>Students</strong> tab to see class-wide data.</p>
         </div>
@@ -747,7 +747,7 @@
 
     <!-- Bulk Import Banner -->
     <div class="card" id="importBanner">
-      <h2>📥 Bulk Import Students from CSV</h2>
+      <h2>Bulk Import Students from CSV</h2>
       <div class="grid-2" style="gap:24px;align-items:start;">
         <div>
           <p style="font-size:0.83rem;color:var(--gray-600);margin-bottom:12px;">
@@ -774,7 +774,7 @@
 Jordan Smith,11,Time Management,Helping People,Listening,Problem Solving,...
 Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...</div>
           <div class="alert alert-gold" style="margin-top:10px;font-size:0.78rem;">
-            📌 <span>Just <strong>Name</strong>, <strong>Grade</strong>, and up to <strong>10 skill names</strong> from Xello's Skills Lab list. No ratings — teachers assign POG levels manually through evidence. Skill names must match Xello's list exactly (see Teacher Tools tab for the full list).</span>
+            <span>Just <strong>Name</strong>, <strong>Grade</strong>, and up to <strong>10 skill names</strong> from Xello's Skills Lab list. No ratings — teachers assign POG levels manually through evidence. Skill names must match Xello's list exactly (see Teacher Tools tab for the full list).</span>
           </div>
         </div>
       </div>
@@ -945,7 +945,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 
     <!-- School Year Transition -->
     <div class="card" style="border-left:5px solid #7B1113;background:linear-gradient(135deg,#fff8f8,#fff);">
-      <h2 style="color:#7B1113;">📅 School Year Transition</h2>
+      <h2 style="color:#7B1113;">School Year Transition</h2>
       <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:14px;">At the start of each new school year, advance all students one grade. Their POG levels, evidence, Xello data, and notes all carry forward with them. Grade 12 students are flagged as <strong>Graduated</strong> rather than deleted.</p>
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="advanceSchoolYear()" style="background:#7B1113;border-color:#7B1113;">🎓 Advance All Students One Grade</button>
@@ -955,7 +955,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 
     <div class="grid-2">
       <div class="card">
-        <h2>📅 Marking Period Workflow</h2>
+        <h2>Marking Period Workflow</h2>
         <ol style="font-size:0.85rem;line-height:2;color:var(--gray-800);padding-left:18px;">
           <li>Students complete <strong>Xello Skills Lab</strong> (once at start of year, re-take optional)</li>
           <li>Teacher observes student behaviors and assigns a <strong>POG level (1 Emerging → 5 Transformative)</strong> each marking period</li>
@@ -976,7 +976,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
     </div>
 
     <div class="card">
-      <h2>🏫 Xello Skills Lab — 35 Skills Reference</h2>
+      <h2>Xello Skills Lab — 35 Skills Reference</h2>
       <p style="font-size:0.82rem;color:var(--gray-600);margin-bottom:14px;">Students select their top skills from this list in Xello. Import them via CSV at the start of the year, or enter them manually via a student's profile. Selected skills are highlighted in the POG crosswalk to guide coaching.</p>
       <div style="display:flex;flex-wrap:wrap;gap:8px;" id="skillsLabChips"></div>
       <div style="margin-top:14px;" class="alert alert-gold">
@@ -985,7 +985,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
     </div>
 
     <div class="card">
-      <h2>🗂️ Export & Share</h2>
+      <h2>Export & Share</h2>
       <p style="font-size:0.83rem;color:var(--gray-600);margin-bottom:14px;">This tool stores data in your browser session. Use the buttons below to export reports.</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="exportCSV()">📥 Export Student Data (CSV)</button>
@@ -1016,7 +1016,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 
       <!-- System Info -->
       <div class="card">
-        <h2>📊 System Stats</h2>
+        <h2>System Stats</h2>
         <div style="display:flex;flex-direction:column;gap:10px;font-size:0.85rem;color:var(--gray-700);">
           <div style="display:flex;justify-content:space-between;border-bottom:1px solid var(--gray-200);padding-bottom:8px;">
             <span>Total Teacher Accounts</span><strong id="adminStatTeachers">—</strong>
@@ -1105,9 +1105,9 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 <div class="modal-overlay" id="skillsModal">
   <div class="modal" style="max-width:680px;">
     <button class="modal-close" onclick="closeModal('skillsModal')">✕</button>
-    <h2>📊 Skills Lab Selections — <span id="skillsModalName"></span></h2>
+    <h2>Skills Lab Selections — <span id="skillsModalName"></span></h2>
     <div class="alert alert-info" style="margin-bottom:14px;font-size:0.80rem;">
-      📌 <span>Check the skills this student identified in Xello's Skills Lab as ones they want to use in their future career. Select up to 10. These show up in the POG crosswalk to guide coaching conversations.</span>
+      <span>Check the skills this student identified in Xello's Skills Lab as ones they want to use in their future career. Select up to 10. These show up in the POG crosswalk to guide coaching conversations.</span>
     </div>
     <div style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
       <span id="skillsSelectedCount" style="font-size:0.80rem;color:var(--gray-600);">0 selected</span>
@@ -1122,12 +1122,12 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 <div class="modal-overlay" id="importModal">
   <div class="modal" style="max-width:900px;width:95%;">
     <button class="modal-close" onclick="closeModal('importModal')">✕</button>
-    <h2>📥 Review Import — <span id="importFileLabel"></span></h2>
+    <h2>Review Import — <span id="importFileLabel"></span></h2>
 
     <div id="importStats" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;"></div>
 
     <div id="xelloBanner" style="display:none;background:#EBF5FB;border:1.5px solid #AED6F1;border-radius:8px;padding:11px 16px;margin-bottom:14px;font-size:0.82rem;color:#1A5276;">
-      🔄 <strong>Xello Skills Lab export detected!</strong> Automatically converted from tall format (one row per skill) to tracker format (one row per student). <span id="xelloBannerCount" style="opacity:0.8;"></span>
+      <strong>Xello Skills Lab export detected!</strong> Automatically converted from tall format (one row per skill) to tracker format (one row per student). <span id="xelloBannerCount" style="opacity:0.8;"></span>
     </div>
 
     <div class="alert alert-info" style="margin-bottom:14px;font-size:0.80rem;">
@@ -1165,7 +1165,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
     <button class="modal-close" onclick="closeModal('evidenceModal')">✕</button>
     <h2>📎 Add Evidence — <span id="evidencePogLabel"></span></h2>
     <div class="alert alert-info" style="margin-bottom:16px;font-size:0.80rem;">
-      📌 <span>Evidence can be a description of something you observed, a project artifact, an assessment result, or a student reflection. Be specific — the more detail, the more useful it is for future conversations.</span>
+      <span>Evidence can be a description of something you observed, a project artifact, an assessment result, or a student reflection. Be specific — the more detail, the more useful it is for future conversations.</span>
     </div>
 
     <div class="form-group">
