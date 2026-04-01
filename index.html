@@ -2678,8 +2678,8 @@ function isAdmin() { return auth.currentUser && auth.currentUser.email.toLowerCa
 function checkPwMatch() {
   const pw  = document.getElementById('regPassword').value;
   const pw2 = document.getElementById('regConfirm').value;
-  document.getElementById('pwLengthIcon').textContent = pw.length >= 6 ? '✅' : '⚪';
-  document.getElementById('pwMatchIcon').textContent  = (pw2.length > 0 && pw === pw2) ? '✅' : '⚪';
+  document.getElementById('pwLengthIcon').textContent = pw.length >= 6 ? '✅' : '☑️';
+  document.getElementById('pwMatchIcon').textContent  = (pw2.length > 0 && pw === pw2) ? '✅' : '☑️';
 }
   
 function switchAuthTab(tab) {
