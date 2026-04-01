@@ -459,7 +459,7 @@
       background: #7B1113; padding: 28px 32px 22px; text-align: center;
       border-bottom: 4px solid #C49A00;
     }
-    .auth-header img { height: 52px; object-fit: contain; margin-bottom: 10px; }
+    .auth-header img { height: 64px; width: 64px; object-fit: contain; margin-bottom: 10px; border-radius: 50%; background: #fff; padding: 4px; border: 2px solid rgba(255,255,255,0.5); box-shadow: 0 0 0 3px rgba(245,166,35,0.5); }
     .auth-header h1 { color: #fff; font-size: 1.15rem; font-weight: 900; letter-spacing: 0.05em; margin: 0; }
     .auth-header p  { color: #C49A00; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin: 4px 0 0; }
     .auth-tabs { display: flex; border-bottom: 2px solid #E5E7EB; }
@@ -567,7 +567,7 @@
       <div class="auth-field"><label>Full Name</label><input type="text" id="regName" placeholder="Ms. Rivera"></div>
       <div class="auth-field"><label>Email Address</label><input type="email" id="regEmail" placeholder="yourname@gmail.com"></div>
       <div class="auth-field"><label>Create Password</label><input type="password" id="regPassword" placeholder="Minimum 6 characters"></div>
-      <div class="auth-field"><label>Confirm Password</label><input type="password" id="regConfirm" placeholder="Re-enter your password" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <div class="auth-field"><label>Confirm Password</label><input type="password" id="regConfirm" placeholder="Re-enter your password" onkeydown="if(event.key==='Enter')doRegister()" oninput="checkPwMatch()"> <span id="pwMatchIcon"></span></div>
       <button class="auth-submit" onclick="doRegister()">Create Account →</button>
     </div>
   </div>
@@ -2675,6 +2675,12 @@ window.addEventListener('click', e => {
 const ADMIN_EMAIL = 'spettifor@muskegonisd.org';
 function isAdmin() { return auth.currentUser && auth.currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase(); }
 
+function checkPwMatch() {
+  const match = document.getElementById('regPassword').value === document.getElementById('regConfirm').value 
+    && document.getElementById('regConfirm').value.length > 0;
+  document.getElementById('pwMatchIcon').textContent = match ? '✅' : '';
+}
+  
 function switchAuthTab(tab) {
   document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (tab==='login'?i===0:i===1)));
   document.getElementById('authLoginForm').style.display    = tab==='login'    ? '' : 'none';
