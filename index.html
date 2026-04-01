@@ -2743,9 +2743,11 @@ function doLogout() {
 }
 
 function onAuthSuccess(firebaseUser) {
-  const displayName = firebaseUser.displayName || firebaseUser.email;
+  const getName = firebaseUser.displayName
+  ? Promise.resolve(firebaseUser.displayName)
+  : db.collection('teachers').doc(firebaseUser.uid).get().then(doc => doc.exists ? doc.data().name : firebaseUser.email).catch(() => firebaseUser.email);
   document.getElementById('authOverlay').classList.add('hidden');
-  document.getElementById('headerUserLabel').textContent = '👤 ' + displayName;
+  getName.then(name => { document.getElementById('headerUserLabel').textContent = name; });
   document.getElementById('logoutBtn').style.display = 'inline-block';
   // Reset auth form buttons
   const lb = document.querySelector('#authLoginForm .auth-submit');
