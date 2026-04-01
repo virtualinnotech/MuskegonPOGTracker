@@ -2730,7 +2730,7 @@ function onAuthSuccess(user) {
   document.getElementById('rosterCountDisplay').textContent = students.length;
   // Show admin tab only for the admin account
   const adminBtn = document.getElementById('adminTabBtn');
-  if (adminBtn) adminBtn.style.display = (user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) ? '' : 'none';
+  if (adminBtn) adminBtn.style.display = (user.email && user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) ? 'inline-block' : 'none';
   updateAdminStats();
 }
 
