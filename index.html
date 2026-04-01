@@ -443,6 +443,60 @@
     }
     .delete-evidence-btn:hover { color: var(--red); }
 
+    /* ─── AUTH OVERLAY ─────────────────────────────────────── */
+    #authOverlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: linear-gradient(135deg, #6B0F11 0%, #1A1A2E 60%, #0d0d1a 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    #authOverlay.hidden { display: none; }
+    .auth-card {
+      background: #fff; border-radius: 20px; width: 100%; max-width: 460px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.55); overflow: hidden;
+    }
+    .auth-header {
+      background: #7B1113; padding: 28px 32px 22px; text-align: center;
+      border-bottom: 4px solid #C49A00;
+    }
+    .auth-header img { height: 52px; object-fit: contain; margin-bottom: 10px; }
+    .auth-header h1 { color: #fff; font-size: 1.15rem; font-weight: 900; letter-spacing: 0.05em; margin: 0; }
+    .auth-header p  { color: #C49A00; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin: 4px 0 0; }
+    .auth-tabs { display: flex; border-bottom: 2px solid #E5E7EB; }
+    .auth-tab  { flex: 1; padding: 14px; text-align: center; font-size: 0.88rem; font-weight: 700; cursor: pointer; color: #6B7280; background: #F9FAFB; border: none; transition: all .18s; }
+    .auth-tab.active { background: #fff; color: #7B1113; border-bottom: 3px solid #7B1113; margin-bottom: -2px; }
+    .auth-body { padding: 28px 32px 32px; }
+    .auth-field { margin-bottom: 16px; }
+    .auth-field label { display: block; font-size: 0.78rem; font-weight: 700; color: #374151; margin-bottom: 5px; }
+    .auth-field input { width: 100%; padding: 11px 14px; border: 2px solid #E5E7EB; border-radius: 9px; font-size: 0.88rem; outline: none; transition: border-color .15s; }
+    .auth-field input:focus { border-color: #7B1113; }
+    .auth-submit { width: 100%; padding: 13px; background: #7B1113; color: #fff; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 800; cursor: pointer; letter-spacing: 0.04em; margin-top: 6px; transition: background .15s; }
+    .auth-submit:hover { background: #5e0d0e; }
+    .auth-error { background: #FEF2F2; border: 1.5px solid #EF4444; border-radius: 8px; padding: 10px 14px; font-size: 0.8rem; color: #B91C1C; margin-bottom: 14px; display: none; }
+    .auth-success { background: #F0FDF4; border: 1.5px solid #22C55E; border-radius: 8px; padding: 10px 14px; font-size: 0.8rem; color: #15803D; margin-bottom: 14px; display: none; }
+
+    /* ─── PROFILE SLIDE PANEL ───────────────────────────────── */
+    #profilePanel {
+      position: fixed; inset: 0; z-index: 500; background: rgba(0,0,0,0.55);
+      display: none; align-items: flex-start; justify-content: flex-end;
+    }
+    #profilePanel.open { display: flex; }
+    #profilePanelInner {
+      width: min(96vw, 1080px); height: 100vh; background: #F4F6F9;
+      overflow-y: auto; box-shadow: -8px 0 40px rgba(0,0,0,0.3);
+      display: flex; flex-direction: column;
+    }
+    .panel-header {
+      background: #7B1113; color: #fff; padding: 16px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10; flex-shrink: 0;
+      border-bottom: 3px solid #C49A00;
+    }
+    .panel-header h2 { font-size: 1.05rem; font-weight: 900; margin: 0; letter-spacing: 0.02em; }
+    .panel-close { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 34px; height: 34px; border-radius: 50%; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; }
+    .panel-close:hover { background: rgba(255,255,255,0.3); }
+    #profilePanelBody { padding: 20px; flex: 1; }
+
     /* ─── PRINT ────────────────────────────────────────────── */
     @media print {
       .nav-tabs, .btn, header .header-right, .modal-overlay { display: none !important; }
@@ -453,6 +507,39 @@
 </head>
 <body>
 
+<!-- ══════════ AUTH OVERLAY ════════════════════════════════ -->
+<div id="authOverlay">
+  <div class="auth-card">
+    <div class="auth-header">
+      <img src="https://i.imgur.com/uDcaTSg.png" alt="Muskegon High School" onerror="this.style.display='none'">
+      <h1>Portrait of a Graduate Tracker</h1>
+      <p>Muskegon High School · Strong Schools, Stronger Communities</p>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchAuthTab('register')">New Account</button>
+    </div>
+    <!-- LOGIN FORM -->
+    <div id="authLoginForm" class="auth-body">
+      <div class="auth-error" id="loginError"></div>
+      <div class="auth-field"><label>Email Address</label><input type="email" id="loginEmail" placeholder="yourname@gmail.com" autocomplete="email"></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <button class="auth-submit" onclick="doLogin()">Sign In →</button>
+      <p style="text-align:center;margin-top:14px;font-size:0.75rem;color:#9CA3AF;">Don't have an account? Click <strong style="color:#7B1113;cursor:pointer;" onclick="switchAuthTab('register')">New Account</strong> above.</p>
+    </div>
+    <!-- REGISTER FORM -->
+    <div id="authRegisterForm" class="auth-body" style="display:none;">
+      <div class="auth-error" id="registerError"></div>
+      <div class="auth-success" id="registerSuccess"></div>
+      <div class="auth-field"><label>Full Name</label><input type="text" id="regName" placeholder="Ms. Rivera"></div>
+      <div class="auth-field"><label>Email Address</label><input type="email" id="regEmail" placeholder="yourname@gmail.com"></div>
+      <div class="auth-field"><label>Create Password</label><input type="password" id="regPassword" placeholder="Minimum 6 characters"></div>
+      <div class="auth-field"><label>Confirm Password</label><input type="password" id="regConfirm" placeholder="Re-enter your password" onkeydown="if(event.key==='Enter')doRegister()"></div>
+      <button class="auth-submit" onclick="doRegister()">Create Account →</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════ HEADER ══════════════════════════════════════ -->
 <header>
   <div class="logo-circle">
@@ -462,9 +549,11 @@
     <h1>Portrait of a Graduate Tracker</h1>
     <p>Muskegon High School · <em style="color:var(--gold);font-style:normal;">Strong Schools, Stronger Communities</em> · POG × Xello Skills Lab</p>
   </div>
-  <div class="header-right">
+  <div class="header-right" style="text-align:right;">
     School Year 2025–26<br>
-    <span id="currentDate" style="font-size:0.82rem;"></span>
+    <span id="currentDate" style="font-size:0.82rem;"></span><br>
+    <span id="headerUserLabel" style="font-size:0.75rem;color:var(--gold);font-weight:600;"></span>
+    <button id="logoutBtn" onclick="doLogout()" style="display:none;margin-top:4px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:6px;padding:3px 10px;font-size:0.72rem;cursor:pointer;">Sign Out</button>
   </div>
 </header>
 
@@ -472,10 +561,59 @@
 <div class="nav-tabs">
   <button class="tab-btn active" onclick="showView('dashboard')">Overview</button>
   <button class="tab-btn" onclick="showView('students')">Students</button>
-  <button class="tab-btn" onclick="showView('profile')">Student Profile</button>
   <button class="tab-btn" onclick="showView('crosswalk')">Crosswalk Guide</button>
   <button class="tab-btn" onclick="showView('rubric')">POG Rubric</button>
   <button class="tab-btn" onclick="showView('teacher')">Teacher Tools</button>
+</div>
+
+<!-- ══════════ STUDENT PROFILE SLIDE PANEL ════════════════ -->
+<div id="profilePanel" onclick="if(event.target===this)closeProfilePanel()">
+  <div id="profilePanelInner">
+    <div class="panel-header">
+      <h2 id="panelStudentTitle">Student Profile</h2>
+      <button class="panel-close" onclick="closeProfilePanel()">✕</button>
+    </div>
+    <div id="profilePanelBody">
+      <div id="profileContent" style="display:none;">
+
+        <div class="card" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+          <div style="width:60px;height:60px;border-radius:50%;background:var(--blue-dark);display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;border:3px solid var(--gold);" id="profileAvatar">👤</div>
+          <div>
+            <div style="font-size:1.3rem;font-weight:800;color:var(--blue-dark);" id="profileName">—</div>
+            <div style="font-size:0.82rem;color:var(--gray-600);" id="profileMeta">—</div>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-gold btn-sm" onclick="openEditModal()">✏️ Edit POG Ratings</button>
+            <button class="btn btn-outline btn-sm" onclick="printProfile()">🖨️ Print Report</button>
+          </div>
+        </div>
+
+        <!-- POG Dashboard Row -->
+        <div id="pogDashboard" class="grid-5"></div>
+
+        <!-- Crosswalk Alignment Table -->
+        <div class="card">
+          <h2>🔗 POG × Xello Skills Crosswalk</h2>
+          <table class="crosswalk-table" id="profileCrosswalkTable">
+            <thead>
+              <tr><th>POG</th><th>POG Level</th><th>Xello Top Skills</th><th>Evidence</th><th>Recommended Action</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div class="prompt-box" id="teacherPrompt">
+            <strong>Teacher Prompt:</strong> Review the alignment above and identify one coaching conversation to have this marking period.
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="card">
+          <h2>📝 Teacher Notes</h2>
+          <textarea id="teacherNotes" rows="4" placeholder="Enter observations, coaching notes, or follow-up goals for this student…" oninput="saveNotes()"></textarea>
+          <div style="margin-top:8px;font-size:0.75rem;color:var(--gray-400);">Notes auto-save as you type.</div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ══════════ MAIN ════════════════════════════════════════ -->
@@ -505,7 +643,7 @@
 
     <div class="grid-2">
       <div class="card">
-        <h2> The Five POGs</h2>
+        <h2>🎯 The Five POGs</h2>
         <p style="font-size:0.82rem;color:var(--gray-600);margin-bottom:14px;">Click a POG to jump to its rubric details.</p>
         <div style="display:flex;flex-direction:column;gap:10px;">
           <div class="pog-card" onclick="showView('rubric');highlightPog(0)">
@@ -537,7 +675,7 @@
       </div>
 
       <div class="card">
-        <h2>Class Alignment Snapshot</h2>
+        <h2>📈 Class Alignment Snapshot</h2>
         <div id="snapshot-container">
           <p style="font-size:0.83rem;color:var(--gray-600);">Add students in the <strong>Students</strong> tab to see class-wide data.</p>
         </div>
@@ -575,7 +713,7 @@
 
     <!-- Bulk Import Banner -->
     <div class="card" id="importBanner">
-      <h2>Bulk Import Students from CSV</h2>
+      <h2>📥 Bulk Import Students from CSV</h2>
       <div class="grid-2" style="gap:24px;align-items:start;">
         <div>
           <p style="font-size:0.83rem;color:var(--gray-600);margin-bottom:12px;">
@@ -586,17 +724,17 @@
                ondragleave="this.classList.remove('drag-over')"
                ondrop="handleFileDrop(event)">
             <input type="file" accept=".csv" onchange="handleFileSelect(event)" />
-            <div class="upload-icon"></div>
+            <div class="upload-icon">📂</div>
             <div class="upload-title">Drop your CSV here or click to browse</div>
             <div class="upload-sub">Accepts .csv files · Up to 500 students</div>
           </div>
           <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
-            <button class="btn btn-gold btn-sm" onclick="downloadTemplate()">Download CSV Template</button>
+            <button class="btn btn-gold btn-sm" onclick="downloadTemplate()">⬇️ Download CSV Template</button>
             <button class="btn btn-outline btn-sm" onclick="document.getElementById('importBanner').style.display='none'">Hide Import Panel</button>
           </div>
         </div>
         <div>
-          <h3 style="margin-bottom:8px;">Required CSV Format</h3>
+          <h3 style="margin-bottom:8px;">📋 Required CSV Format</h3>
           <div class="template-box">Name,Grade,Skill 1,Skill 2,Skill 3,...,Skill 10
 
 Jordan Smith,11,Time Management,Helping People,Listening,Problem Solving,...
@@ -611,7 +749,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
     <div class="card">
       <h2>👥 Student Roster</h2>
       <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="Search by name or grade…" oninput="renderStudentTable()" />
+        <input type="text" id="searchInput" placeholder="🔍 Search by name or grade…" oninput="renderStudentTable()" />
         <select id="filterGrade" onchange="renderStudentTable()">
           <option value="">All Grades</option>
           <option value="9">Grade 9</option>
@@ -627,11 +765,11 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
           <thead>
             <tr>
               <th>Name</th><th>Grade</th>
-              <th title="Persistent Professional">PP</th>
-              <th title="Collaborator">C</th>
-              <th title="Creative Problem Solver">CPS</th>
-              <th title="Adaptable Communicator">AC</th>
-              <th title="Responsible Citizen">RC</th>
+              <th title="Persistent Professional">◆ PP</th>
+              <th title="Collaborator">● CRB</th>
+              <th title="Creative Problem Solver">▲ CPS</th>
+              <th title="Adaptable Communicator">◀ AC</th>
+              <th title="Responsible Citizen">★ RC</th>
               <th>Avg Level</th><th>Progression</th><th>Action</th>
             </tr>
           </thead>
@@ -642,57 +780,6 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
   </div>
 
   <!-- ── VIEW: STUDENT PROFILE ────────────────────────────── -->
-  <div id="view-profile" class="view">
-    <div id="profileSelectMsg" class="card">
-      <h2>Student Profile</h2>
-      <p style="color:var(--gray-600);font-size:0.88rem;">Select a student from the <strong>Students</strong> tab to view their full profile and POG × Skills Lab crosswalk.</p>
-    </div>
-    <div id="profileContent" style="display:none;">
-
-      <div class="card" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
-        <div style="width:60px;height:60px;border-radius:50%;background:var(--blue-dark);display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#fff;border:3px solid var(--gold);" id="profileAvatar">👤</div>
-        <div>
-          <div style="font-size:1.3rem;font-weight:800;color:var(--blue-dark);" id="profileName">—</div>
-          <div style="font-size:0.82rem;color:var(--gray-600);" id="profileMeta">—</div>
-        </div>
-        <div style="margin-left:auto;display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn btn-gold btn-sm" onclick="openEditModal()">Edit POG Ratings</button>
-          <button class="btn btn-outline btn-sm" onclick="printProfile()">🖨️ Print Profile</button>
-        </div>
-      </div>
-
-      <!-- POG Dashboard Row -->
-      <div id="pogDashboard" class="grid-5"></div>
-
-      <!-- Crosswalk Alignment Table -->
-      <div class="card">
-        <h2>🔗 POG × Skills Lab Crosswalk</h2>
-        <table class="crosswalk-table" id="profileCrosswalkTable">
-          <thead>
-            <tr>
-              <th>POG</th>
-              <th>POG Level</th>
-              <th>Xello Top Skills</th>
-              <th>Evidence</th>
-              <th>Recommended Action</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <div class="prompt-box" id="teacherPrompt">
-          <strong>Teacher Prompt:</strong> Review the alignment above and identify one coaching conversation to have this marking period.
-        </div>
-      </div>
-
-      <!-- Notes -->
-      <div class="card">
-        <h2>Teacher Notes</h2>
-        <textarea id="teacherNotes" rows="4" placeholder="Enter observations, coaching notes, or follow-up goals for this student…" oninput="saveNotes()"></textarea>
-        <div style="margin-top:8px;font-size:0.75rem;color:var(--gray-400);">Notes auto-save to this session.</div>
-      </div>
-    </div>
-  </div>
-
   <!-- ── VIEW: CROSSWALK GUIDE ────────────────────────────── -->
   <div id="view-crosswalk" class="view">
     <div class="alert alert-gold">
@@ -705,10 +792,10 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
         <h2>◆ Persistent Professional</h2>
         <table class="crosswalk-table">
           <tr><th>Skills Lab Skill</th><th>What it Signals</th></tr>
-          <tr><td>Time Management</td><td>Wants to plan and meet deadlines</td></tr>
-          <tr><td>Organization</td><td>Values structure and order</td></tr>
-          <tr><td>Attention to Detail</td><td>Cares about quality, not just completion</td></tr>
-          <tr><td>Responsibility</td><td>Owns outcomes — positive or negative</td></tr>
+          <tr><td>⏰ Time Management</td><td>Wants to plan and meet deadlines</td></tr>
+          <tr><td>📋 Organization</td><td>Values structure and order</td></tr>
+          <tr><td>🔍 Attention to Detail</td><td>Cares about quality, not just completion</td></tr>
+          <tr><td>✅ Responsibility</td><td>Owns outcomes — positive or negative</td></tr>
         </table>
         <div class="prompt-box">
           <strong>Monitor:</strong> Does the student value consistency and follow-through? If they rate these skills "Always" but struggle to meet deadlines, that's your coaching window.
@@ -716,13 +803,13 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
       </div>
 
       <div class="card">
-        <h2>Collaborator</h2>
+        <h2>● Collaborator</h2>
         <table class="crosswalk-table">
           <tr><th>Skills Lab Skill</th><th>What it Signals</th></tr>
-          <tr><td>Teamwork</td><td>Prefers working with others toward shared goals</td></tr>
-          <tr><td>Active Listening</td><td>Values hearing others before responding</td></tr>
-          <tr><td>Cooperation</td><td>Willing to compromise and support group</td></tr>
-          <tr><td>Helping Others</td><td>Motivated by service and support</td></tr>
+          <tr><td>👥 Teamwork</td><td>Prefers working with others toward shared goals</td></tr>
+          <tr><td>👂 Active Listening</td><td>Values hearing others before responding</td></tr>
+          <tr><td>🤲 Cooperation</td><td>Willing to compromise and support group</td></tr>
+          <tr><td>🙌 Helping Others</td><td>Motivated by service and support</td></tr>
         </table>
         <div class="prompt-box">
           <strong>Monitor:</strong> Do they want to work with others? A student who rates Teamwork "Always" but avoids group work needs a safe space to explore that gap.
@@ -730,13 +817,13 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
       </div>
 
       <div class="card">
-        <h2>Creative Problem Solver</h2>
+        <h2>▲ Creative Problem Solver</h2>
         <table class="crosswalk-table">
           <tr><th>Skills Lab Skill</th><th>What it Signals</th></tr>
-          <tr><td>Problem Solving</td><td>Enjoys figuring things out independently</td></tr>
-          <tr><td>Critical Thinking</td><td>Questions assumptions and analyzes deeply</td></tr>
-          <tr><td>Creativity</td><td>Wants to express original ideas</td></tr>
-          <tr><td>Innovation</td><td>Drawn to doing things in new ways</td></tr>
+          <tr><td>🧩 Problem Solving</td><td>Enjoys figuring things out independently</td></tr>
+          <tr><td>🧠 Critical Thinking</td><td>Questions assumptions and analyzes deeply</td></tr>
+          <tr><td>🎨 Creativity</td><td>Wants to express original ideas</td></tr>
+          <tr><td>🚀 Innovation</td><td>Drawn to doing things in new ways</td></tr>
         </table>
         <div class="prompt-box">
           <strong>Monitor:</strong> Do they value figuring things out vs. being told? Student rates Creativity high but never proposes ideas in class? Set a project-based goal.
@@ -744,13 +831,13 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
       </div>
 
       <div class="card">
-        <h2>Adaptable Communicator</h2>
+        <h2>◀ Adaptable Communicator</h2>
         <table class="crosswalk-table">
           <tr><th>Skills Lab Skill</th><th>What it Signals</th></tr>
-          <tr><td>Verbal Communication</td><td>Comfortable expressing ideas out loud</td></tr>
-          <tr><td>Written Communication</td><td>Values clear written expression</td></tr>
-          <tr><td>Flexibility</td><td>Adapts approach based on audience or context</td></tr>
-          <tr><td>Presentation</td><td>Wants to share ideas with groups</td></tr>
+          <tr><td>💬 Verbal Communication</td><td>Comfortable expressing ideas out loud</td></tr>
+          <tr><td>✍️ Written Communication</td><td>Values clear written expression</td></tr>
+          <tr><td>🔄 Flexibility</td><td>Adapts approach based on audience or context</td></tr>
+          <tr><td>📢 Presentation</td><td>Wants to share ideas with groups</td></tr>
         </table>
         <div class="prompt-box">
           <strong>Monitor:</strong> Do they want to express ideas and adjust messaging? Great writers who avoid verbal presentations — or vice versa — show you where to stretch.
@@ -758,14 +845,14 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
       </div>
 
       <div class="card" style="grid-column: 1 / -1;">
-        <h2>Responsible Citizen</h2>
+        <h2>★ Responsible Citizen</h2>
         <div class="grid-2">
           <table class="crosswalk-table">
             <tr><th>Skills Lab Skill</th><th>What it Signals</th></tr>
-            <tr><td>Integrity</td><td>Acts consistently with values, even when hard</td></tr>
-            <tr><td>Helping Others</td><td>Driven by service to community</td></tr>
-            <tr><td>Dependability</td><td>Others can count on them</td></tr>
-            <tr><td>Community Awareness</td><td>Thinks beyond self; considers impact</td></tr>
+            <tr><td>⚖️ Integrity</td><td>Acts consistently with values, even when hard</td></tr>
+            <tr><td>🙌 Helping Others</td><td>Driven by service to community</td></tr>
+            <tr><td>🛡️ Dependability</td><td>Others can count on them</td></tr>
+            <tr><td>🏘️ Community Awareness</td><td>Thinks beyond self; considers impact</td></tr>
           </table>
           <div class="prompt-box" style="margin:0;">
             <strong>Monitor:</strong> Do they value impact beyond themselves? A student who rates "Helping Others" highly but never volunteers for classroom leadership — what's the barrier?
@@ -775,7 +862,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
     </div>
 
     <div class="card">
-      <h2>The 5-Level POG Progression Scale</h2>
+      <h2>🔑 The 5-Level POG Progression Scale</h2>
       <p style="font-size:0.83rem;color:var(--gray-600);margin-bottom:16px;">Every student is on a growth journey. These levels describe where they are — not a ceiling, but a starting point for the next conversation.</p>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;">
         <div style="padding:14px;background:#F0F3F4;border-radius:10px;border-top:4px solid #7F8C8D;text-align:center;">
@@ -813,7 +900,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
   <!-- ── VIEW: POG RUBRIC ─────────────────────────────────── -->
   <div id="view-rubric" class="view">
     <div class="alert alert-info">
-      <span>The rubric below describes observable behaviors for each POG across the <strong>5-level progression: Emerging → Developing → Proficient → Advanced → Transformative</strong>. Teachers use this to assign POG levels each marking period. <strong>Update descriptors with exact language from your Muskegon DRAFT spreadsheet.</strong></span>
+      📋 <span>The rubric below describes observable behaviors for each POG across the <strong>5-level progression: Emerging → Developing → Proficient → Advanced → Transformative</strong>. Teachers use this to assign POG levels each marking period. <strong>Update descriptors with exact language from your Muskegon DRAFT spreadsheet.</strong></span>
     </div>
 
     <div id="rubric-sections"></div>
@@ -822,9 +909,19 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
   <!-- ── VIEW: TEACHER TOOLS ──────────────────────────────── -->
   <div id="view-teacher" class="view">
 
+    <!-- School Year Transition -->
+    <div class="card" style="border-left:5px solid #7B1113;background:linear-gradient(135deg,#fff8f8,#fff);">
+      <h2 style="color:#7B1113;">📅 School Year Transition</h2>
+      <p style="font-size:0.85rem;color:var(--gray-600);margin-bottom:14px;">At the start of each new school year, advance all students one grade. Their POG levels, evidence, Xello data, and notes all carry forward with them. Grade 12 students are flagged as <strong>Graduated</strong> rather than deleted.</p>
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="advanceSchoolYear()" style="background:#7B1113;border-color:#7B1113;">🎓 Advance All Students One Grade</button>
+        <span style="font-size:0.78rem;color:var(--gray-500);">Current roster: <strong id="rosterCountDisplay">—</strong> students</span>
+      </div>
+    </div>
+
     <div class="grid-2">
       <div class="card">
-        <h2>Marking Period Workflow</h2>
+        <h2>📅 Marking Period Workflow</h2>
         <ol style="font-size:0.85rem;line-height:2;color:var(--gray-800);padding-left:18px;">
           <li>Students complete <strong>Xello Skills Lab</strong> (once at start of year, re-take optional)</li>
           <li>Teacher observes student behaviors and assigns a <strong>POG level (1 Emerging → 5 Transformative)</strong> each marking period</li>
@@ -835,7 +932,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
       </div>
 
       <div class="card">
-        <h2>Sample Teacher Prompts</h2>
+        <h2>💬 Sample Teacher Prompts</h2>
         <div style="display:flex;flex-direction:column;gap:10px;font-size:0.83rem;">
           <div class="prompt-box">"I see you rated <em>Teamwork</em> as something you want to use often, but your Collaborator POG is still developing. Let's set one goal for how you can practice that this quarter."</div>
           <div class="prompt-box">"You consistently demonstrate strong organization skills — your Persistent Professional POG is one of your highlights. Have you thought about roles where that skill is central?"</div>
@@ -845,7 +942,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
     </div>
 
     <div class="card">
-      <h2>Xello Skills Lab — 35 Skills Reference</h2>
+      <h2>🏫 Xello Skills Lab — 35 Skills Reference</h2>
       <p style="font-size:0.82rem;color:var(--gray-600);margin-bottom:14px;">Students select their top skills from this list in Xello. Import them via CSV at the start of the year, or enter them manually via a student's profile. Selected skills are highlighted in the POG crosswalk to guide coaching.</p>
       <div style="display:flex;flex-wrap:wrap;gap:8px;" id="skillsLabChips"></div>
       <div style="margin-top:14px;" class="alert alert-gold">
@@ -854,7 +951,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
     </div>
 
     <div class="card">
-      <h2>Export & Share</h2>
+      <h2>🗂️ Export & Share</h2>
       <p style="font-size:0.83rem;color:var(--gray-600);margin-bottom:14px;">This tool stores data in your browser session. Use the buttons below to export reports.</p>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
         <button class="btn btn-primary" onclick="exportCSV()">📥 Export Student Data (CSV)</button>
@@ -911,9 +1008,9 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 <div class="modal-overlay" id="skillsModal">
   <div class="modal" style="max-width:680px;">
     <button class="modal-close" onclick="closeModal('skillsModal')">✕</button>
-    <h2>Skills Lab Selections — <span id="skillsModalName"></span></h2>
+    <h2>📊 Skills Lab Selections — <span id="skillsModalName"></span></h2>
     <div class="alert alert-info" style="margin-bottom:14px;font-size:0.80rem;">
-      <span>Check the skills this student identified in Xello's Skills Lab as ones they want to use in their future career. Select up to 10. These show up in the POG crosswalk to guide coaching conversations.</span>
+      📌 <span>Check the skills this student identified in Xello's Skills Lab as ones they want to use in their future career. Select up to 10. These show up in the POG crosswalk to guide coaching conversations.</span>
     </div>
     <div style="margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
       <span id="skillsSelectedCount" style="font-size:0.80rem;color:var(--gray-600);">0 selected</span>
@@ -928,16 +1025,16 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 <div class="modal-overlay" id="importModal">
   <div class="modal" style="max-width:900px;width:95%;">
     <button class="modal-close" onclick="closeModal('importModal')">✕</button>
-    <h2>Review Import — <span id="importFileLabel"></span></h2>
+    <h2>📥 Review Import — <span id="importFileLabel"></span></h2>
 
     <div id="importStats" style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;"></div>
 
     <div id="xelloBanner" style="display:none;background:#EBF5FB;border:1.5px solid #AED6F1;border-radius:8px;padding:11px 16px;margin-bottom:14px;font-size:0.82rem;color:#1A5276;">
-      <strong>Xello Skills Lab export detected!</strong> Automatically converted from tall format (one row per skill) to tracker format (one row per student). <span id="xelloBannerCount" style="opacity:0.8;"></span>
+      🔄 <strong>Xello Skills Lab export detected!</strong> Automatically converted from tall format (one row per skill) to tracker format (one row per student). <span id="xelloBannerCount" style="opacity:0.8;"></span>
     </div>
 
     <div class="alert alert-info" style="margin-bottom:14px;font-size:0.80rem;">
-      <span>Review the parsed data below. All POG levels will start at <strong>1 — Emerging</strong> (teachers set these manually). Skills Lab data is pre-loaded from your CSV. Unrecognized skill names are flagged in orange.</span>
+      ✅ <span>Review the parsed data below. All POG levels will start at <strong>1 — Emerging</strong> (teachers set these manually). Skills Lab data is pre-loaded from your CSV. Unrecognized skill names are flagged in orange.</span>
     </div>
 
     <div style="overflow-x:auto;max-height:400px;overflow-y:auto;">
@@ -971,18 +1068,18 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
     <button class="modal-close" onclick="closeModal('evidenceModal')">✕</button>
     <h2>📎 Add Evidence — <span id="evidencePogLabel"></span></h2>
     <div class="alert alert-info" style="margin-bottom:16px;font-size:0.80rem;">
-      <span>Evidence can be a description of something you observed, a project artifact, an assessment result, or a student reflection. Be specific — the more detail, the more useful it is for future conversations.</span>
+      📌 <span>Evidence can be a description of something you observed, a project artifact, an assessment result, or a student reflection. Be specific — the more detail, the more useful it is for future conversations.</span>
     </div>
 
     <div class="form-group">
       <label>Evidence Type</label>
       <select id="evType">
-        <option value="Observation">Observation — teacher noted behavior in class</option>
-        <option value="Project">Project — artifact from a class assignment or project</option>
-        <option value="Assessment">Assessment — performance on a formal task</option>
-        <option value="Self-Reflection">Self-Reflection — student's own written reflection</option>
-        <option value="Artifact">Artifact — uploaded document, photo, or link</option>
-        <option value="Other">Other</option>
+        <option value="Observation">👁️ Observation — teacher noted behavior in class</option>
+        <option value="Project">📁 Project — artifact from a class assignment or project</option>
+        <option value="Assessment">📝 Assessment — performance on a formal task</option>
+        <option value="Self-Reflection">💭 Self-Reflection — student's own written reflection</option>
+        <option value="Artifact">🖼️ Artifact — uploaded document, photo, or link</option>
+        <option value="Other">🔖 Other</option>
       </select>
     </div>
 
@@ -1004,9 +1101,9 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
       <div class="form-group">
         <label>Added By</label>
         <select id="evAddedBy">
-          <option value="Teacher">Teacher</option>
-          <option value="Student">Student</option>
-          <option value="Counselor">Counselor</option>
+          <option value="Teacher">👩‍🏫 Teacher</option>
+          <option value="Student">🎓 Student</option>
+          <option value="Counselor">🧭 Counselor</option>
         </select>
       </div>
     </div>
@@ -1228,7 +1325,7 @@ function showView(id) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('view-' + id).classList.add('active');
-  const tabs = ['dashboard','students','profile','crosswalk','rubric','teacher'];
+  const tabs = ['dashboard','students','crosswalk','rubric','teacher'];
   const tabBtns = document.querySelectorAll('.tab-btn');
   const i = tabs.indexOf(id);
   if (i >= 0) tabBtns[i].classList.add('active');
@@ -1251,8 +1348,10 @@ function addStudent() {
     evidence: [[],[],[],[],[]]
   });
   closeModal('addStudentModal');
+  saveStudents();
   renderStudentTable();
   updateStats();
+  document.getElementById('rosterCountDisplay').textContent = students.length;
 }
 
 function openEditModal() {
@@ -1269,6 +1368,7 @@ function saveEdit() {
   [0,1,2,3,4].forEach(i => s.pogs[i] = parseInt(document.getElementById('e'+i).value));
   s.mp = parseInt(document.getElementById('editMP').value);
   closeModal('editModal');
+  saveStudents();
   renderProfile(currentStudentIdx);
   renderStudentTable();
   updateStats();
@@ -1376,7 +1476,7 @@ function renderStudentTable() {
     const levelClass = `badge-l${Math.min(5,Math.max(1,avgLevel))}`;
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><strong>${s.name}</strong></td>
+      <td><strong style="color:var(--blue-dark);cursor:pointer;text-decoration:underline;text-underline-offset:2px;" onclick="openProfile(${idx})">${s.name}</strong></td>
       <td>${s.grade}th</td>
       ${s.pogs.map(p => `<td><span class="level-dot" style="background:${LEVEL_COLORS[p]}22;color:${LEVEL_COLORS[p]};border:2px solid ${LEVEL_COLORS[p]};">${p}</span></td>`).join('')}
       <td><strong>${avg}</strong></td>
@@ -1444,7 +1544,14 @@ function getCrossStatus(student) { return getCrossLevel(student).map(r => r.leve
 function openProfile(idx) {
   currentStudentIdx = idx;
   renderProfile(idx);
-  showView('profile');
+  const s = students[idx];
+  document.getElementById('panelStudentTitle').textContent = s.name + ' — Student Profile';
+  document.getElementById('profilePanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeProfilePanel() {
+  document.getElementById('profilePanel').classList.remove('open');
+  document.body.style.overflow = '';
 }
 function renderProfile(idx) {
   const s = students[idx];
@@ -1502,10 +1609,10 @@ function renderProfile(idx) {
       </div>
       <div style="font-size:0.75rem;color:${LEVEL_COLORS[level]};margin-bottom:10px;margin-top:14px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;">${LEVELS[level]}</div>
       <div class="progress-wrap" style="height:8px;"><div class="progress-bar" style="width:${pct}%;background:${LEVEL_COLORS[level]};border-radius:4px;"></div></div>
-      ${evCount > 0 ? `<div style="margin-top:10px;font-size:0.70rem;color:var(--gray-600);"><strong>${evCount}</strong> piece${evCount!==1?'s':''} of evidence</div>` : ''}
+      ${evCount > 0 ? `<div style="margin-top:10px;font-size:0.70rem;color:var(--gray-600);">📎 <strong>${evCount}</strong> piece${evCount!==1?'s':''} of evidence</div>` : ''}
       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
         <button class="evidence-toggle-btn" onclick="toggleEvidence(this)" data-pi="${pi}" style="flex:1;">
-          ${evCount > 0 ? `View Evidence (${evCount})` : 'Evidence'}
+          ${evCount > 0 ? `📂 View Evidence (${evCount})` : '📂 Evidence'}
         </button>
         <button class="btn btn-outline" onclick="openPOGDetail(${idx},${pi})" title="View full detail" style="padding:6px 12px;font-size:0.75rem;white-space:nowrap;border-color:var(--gray-300);color:var(--gray-600);">View Details →</button>
       </div>
@@ -1826,8 +1933,10 @@ function confirmImport() {
   });
 
   closeModal('importModal');
+  saveStudents();
   renderStudentTable();
   updateStats();
+  document.getElementById('rosterCountDisplay').textContent = students.length;
   document.getElementById('importBanner').style.display = 'none';
   alert(`✅ ${added} student${added !== 1 ? 's' : ''} imported successfully! POG levels are set to 1 — Emerging. Add ratings and evidence from each student profile.`);
 }
@@ -1889,12 +1998,14 @@ function saveEvidence() {
   });
 
   closeModal('evidenceModal');
+  saveStudents();
   renderProfile(_evStudentIdx);
 }
 
 function deleteEvidence(studentIdx, pogIdx, evIdx) {
   if (!confirm('Remove this evidence entry?')) return;
   students[studentIdx].evidence[pogIdx].splice(evIdx, 1);
+  saveStudents();
   renderProfile(studentIdx);
 }
 
@@ -1912,6 +2023,7 @@ function toggleEvidence(btn) {
 function saveNotes() {
   if (currentStudentIdx === null) return;
   students[currentStudentIdx].notes = document.getElementById('teacherNotes').value;
+  saveStudents();
 }
 function printProfile() {
   if (currentStudentIdx === null) { alert('Please select a student first.'); return; }
@@ -2020,9 +2132,9 @@ body{font-family:'Segoe UI',Arial,Helvetica,sans-serif;background:#e5e7eb;-webki
 
   <!-- META -->
   <div style="display:flex;gap:32px;padding:9px 28px 8px;border-bottom:1px solid #E5E7EB;font-size:0.78rem;color:#374151;align-items:center;">
-    <span><strong>Student ID:</strong> ${pseudoId}</span>
-    <span><strong>Graduation Year:</strong> ${gradYear}</span>
-    <span><strong>Marking Period:</strong> ${s.mp}</span>
+    <span>👤 <strong>Student ID:</strong> ${pseudoId}</span>
+    <span>📅 <strong>Graduation Year:</strong> ${gradYear}</span>
+    <span>📌 <strong>Marking Period:</strong> ${s.mp}</span>
     <span style="margin-left:auto;font-size:0.68rem;color:#9CA3AF;">Generated ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
   </div>
 
@@ -2065,6 +2177,11 @@ body{font-family:'Segoe UI',Arial,Helvetica,sans-serif;background:#e5e7eb;-webki
         <span style="width:19px;height:19px;background:#C49A00;border-radius:50%;color:#fff;font-size:0.6rem;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">🎯</span> Next Steps
       </div>
       <ul style="padding-left:15px;font-size:0.66rem;color:#374151;line-height:1.8;margin:0;">${nextSteps.map(a=>`<li>${a}</li>`).join('')}</ul>
+    </div>
+    <div style="width:128px;flex-shrink:0;border:2px solid #7B1113;border-radius:10px;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#FFF5F5;text-align:center;">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=88x88&color=7B1113&bgcolor=fff5f5&data=${encodeURIComponent('https://muskegonhs.org/pog/'+s.name.toLowerCase().replace(/ /g,'-'))}" width="88" height="88" style="border-radius:4px;" onerror="this.style.display='none'">
+      <div style="font-size:0.61rem;font-weight:800;color:#7B1113;margin-top:7px;line-height:1.35;">View Full Digital Profile</div>
+      <div style="font-size:0.53rem;color:#9CA3AF;margin-top:2px;">muskegonhs.org/pog</div>
     </div>
   </div>
 
@@ -2418,9 +2535,9 @@ function openPOGDetail(idx, pi) {
         <span class="evidence-type-badge etype-${ev.type.toLowerCase().replace(/ /g,'-')}">${ev.type}</span>
         <div style="line-height:1.5;">${ev.description}</div>
         <div class="evidence-meta">
-          <span>📅 ${ev.date}</span>
-          <span>📌 MP ${ev.mp}</span>
-          <span>👤 ${ev.addedBy}</span>
+          <span>${ev.date}</span>
+          <span>${ev.mp}</span>
+          <span>${ev.addedBy}</span>
         </div>
       </div>`).join('');
   }
@@ -2440,18 +2557,133 @@ window.addEventListener('click', e => {
   if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('open');
 });
 
+// ─── AUTH ──────────────────────────────────────────────────
+function _hashPw(pw) {
+  let h = 5381;
+  for (let i = 0; i < pw.length; i++) h = ((h << 5) + h) ^ pw.charCodeAt(i);
+  return (h >>> 0).toString(36);
+}
+function _getUsers()   { try { return JSON.parse(localStorage.getItem('pog_users')||'[]'); } catch(e){ return []; } }
+function _saveUsers(u) { localStorage.setItem('pog_users', JSON.stringify(u)); }
+function _getSession() { try { return JSON.parse(localStorage.getItem('pog_session')||'null'); } catch(e){ return null; } }
+function _setSession(s){ localStorage.setItem('pog_session', JSON.stringify(s)); }
+
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (tab==='login'?i===0:i===1)));
+  document.getElementById('authLoginForm').style.display    = tab==='login'    ? '' : 'none';
+  document.getElementById('authRegisterForm').style.display = tab==='register' ? '' : 'none';
+}
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pw    = document.getElementById('loginPassword').value;
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  if (!email || !pw) { errEl.textContent = 'Please enter your email and password.'; errEl.style.display='block'; return; }
+  const users = _getUsers();
+  const user  = users.find(u => u.email === email);
+  if (!user || user.passwordHash !== _hashPw(pw)) {
+    errEl.textContent = 'Email or password is incorrect. Please try again.'; errEl.style.display='block'; return;
+  }
+  _setSession({ email: user.email, name: user.name });
+  onAuthSuccess(user);
+}
+
+function doRegister() {
+  const name  = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  const pw    = document.getElementById('regPassword').value;
+  const pw2   = document.getElementById('regConfirm').value;
+  const errEl = document.getElementById('registerError');
+  const okEl  = document.getElementById('registerSuccess');
+  errEl.style.display = 'none'; okEl.style.display = 'none';
+  if (!name)  { errEl.textContent = 'Please enter your name.'; errEl.style.display='block'; return; }
+  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display='block'; return; }
+  if (pw.length < 6)  { errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display='block'; return; }
+  if (pw !== pw2)     { errEl.textContent = 'Passwords do not match.'; errEl.style.display='block'; return; }
+  const users = _getUsers();
+  if (users.find(u => u.email === email)) { errEl.textContent = 'An account with this email already exists.'; errEl.style.display='block'; return; }
+  const newUser = { email, name, passwordHash: _hashPw(pw) };
+  users.push(newUser);
+  _saveUsers(users);
+  _setSession({ email, name });
+  onAuthSuccess(newUser);
+}
+
+function doLogout() {
+  localStorage.removeItem('pog_session');
+  document.getElementById('authOverlay').classList.remove('hidden');
+  document.getElementById('logoutBtn').style.display = 'none';
+  document.getElementById('headerUserLabel').textContent = '';
+  // Clear form fields
+  ['loginEmail','loginPassword','regName','regEmail','regPassword','regConfirm'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('loginError').style.display='none';
+  switchAuthTab('login');
+}
+
+function onAuthSuccess(user) {
+  document.getElementById('authOverlay').classList.add('hidden');
+  document.getElementById('headerUserLabel').textContent = '👤 ' + user.name;
+  document.getElementById('logoutBtn').style.display = 'inline-block';
+  loadStudents();
+  renderStudentTable();
+  updateStats();
+  document.getElementById('rosterCountDisplay').textContent = students.length;
+}
+
+// ─── DATA PERSISTENCE ─────────────────────────────────────
+function saveStudents() {
+  try { localStorage.setItem('pog_students', JSON.stringify(students)); } catch(e){}
+}
+function loadStudents() {
+  try {
+    const saved = localStorage.getItem('pog_students');
+    if (saved) { const parsed = JSON.parse(saved); if (Array.isArray(parsed) && parsed.length) { students.length = 0; parsed.forEach(s => students.push(s)); } }
+  } catch(e){}
+}
+
+// ─── GRADE ADVANCEMENT ────────────────────────────────────
+function advanceSchoolYear() {
+  if (!students.length) { alert('No students in the roster yet.'); return; }
+  const confirmed = confirm(
+    `Advance all ${students.length} students one grade?\n\n` +
+    `• Grade 9 → 10, 10 → 11, 11 → 12\n` +
+    `• Grade 12 students will be marked as Graduated\n` +
+    `• All POG levels, evidence, Xello data, and notes carry forward\n\n` +
+    `This action cannot be undone.`
+  );
+  if (!confirmed) return;
+  let graduated = 0;
+  students.forEach(s => {
+    const g = parseInt(s.grade);
+    if (g >= 12) { s.grade = 'Grad'; graduated++; }
+    else s.grade = String(g + 1);
+  });
+  saveStudents();
+  renderStudentTable();
+  updateStats();
+  document.getElementById('rosterCountDisplay').textContent = students.length;
+  alert(`✅ Done! All students advanced.\n${graduated > 0 ? `${graduated} student(s) marked as Graduated.` : 'No students graduated this year.'}`);
+}
+
 // ─── INIT ─────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
-  // Inject SVG badge icons into dashboard POG cards
-  POG_BADGES.forEach((svg, i) => {
-    const el = document.getElementById('badge-icon-' + i);
-    if (el) el.innerHTML = svg;
-  });
+  POG_BADGES.forEach((svg, i) => { const el = document.getElementById('badge-icon-' + i); if (el) el.innerHTML = svg; });
   buildRubric();
   buildSkillsChips();
-  renderStudentTable();
-  updateStats();
+
+  // Check auth — show overlay or restore session
+  const session = _getSession();
+  if (session && session.email) {
+    onAuthSuccess(session);
+  } else {
+    document.getElementById('authOverlay').classList.remove('hidden');
+    // Still build table with demo data so it's ready when they log in
+    renderStudentTable();
+    updateStats();
+  }
+  document.getElementById('rosterCountDisplay').textContent = students.length;
 });
 </script>
 </body>
