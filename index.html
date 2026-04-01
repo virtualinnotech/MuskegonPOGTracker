@@ -581,7 +581,7 @@
   <div class="header-right" style="text-align:right;">
     School Year 2025–26<br>
     <span id="currentDate" style="font-size:0.82rem;"></span><br>
-    <span id="headerUserLabel" style="font-size:0.75rem;color:var(--gold);font-weight:600;"></span>
+    <span id="headerUserLabel" style="font-size:1.5rem;color:var(#ffffff);font-weight:600;"></span>
     <button id="logoutBtn" onclick="doLogout()" style="display:none;margin-top:4px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:6px;padding:3px 10px;font-size:0.72rem;cursor:pointer;">Sign Out</button>
   </div>
 </header>
@@ -788,7 +788,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
           <option value="12">Grade 12</option>
         </select>
         <button class="btn btn-primary" onclick="openAddStudentModal()">＋ Add Student</button>
-        <button class="btn btn-outline btn-sm" onclick="document.getElementById('importBanner').style.display='block'" title="Show bulk import">📥 Import CSV</button>
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('importBanner').style.display='block'" title="Show bulk import">Import CSV</button>
       </div>
       <div style="overflow-x:auto;">
         <table class="data-table">
@@ -2722,7 +2722,7 @@ function isAdmin() { const s = _getSession(); return s && s.email && s.email.toL
 
 function onAuthSuccess(user) {
   document.getElementById('authOverlay').classList.add('hidden');
-  document.getElementById('headerUserLabel').textContent = '👤 ' + user.name;
+  document.getElementById('headerUserLabel').textContent = user.name;
   document.getElementById('logoutBtn').style.display = 'inline-block';
   loadStudents();
   renderStudentTable();
