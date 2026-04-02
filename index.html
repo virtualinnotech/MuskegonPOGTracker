@@ -537,6 +537,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
 
@@ -1049,16 +1050,48 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 <div class="modal-overlay" id="addTeacherModal">
   <div class="modal" style="max-width:460px;">
     <button class="modal-close" onclick="closeModal('addTeacherModal')">✕</button>
-    <h2>👤 Add Teacher Account</h2>
-    <p style="font-size:0.83rem;color:var(--gray-600);margin-bottom:18px;">Create a login account for a teacher. They'll use this email and password to sign in.</p>
+    <h2>✉️ Invite Teacher</h2>
+    <p style="font-size:0.83rem;color:var(--gray-600);margin-bottom:18px;">Enter the teacher's name and school email. They will receive a professional invitation email with a link to create their password and complete registration.</p>
     <div id="atError" style="display:none;background:#FEE2E2;color:#7B1113;border-radius:8px;padding:10px 14px;font-size:0.83rem;margin-bottom:14px;"></div>
+    <div id="atSuccess" style="display:none;background:#D1FAE5;color:#065F46;border-radius:8px;padding:10px 14px;font-size:0.83rem;margin-bottom:14px;"></div>
     <div class="form-group"><label>Full Name</label><input type="text" id="atName" placeholder="e.g. Ms. Johnson" /></div>
-    <div class="form-group"><label>School Email</label><input type="email" id="atEmail" placeholder="school email" /></div>
-    <div class="form-group"><label>Temporary Password</label><input type="password" id="atPassword" placeholder="Min. 6 characters" /></div>
+    <div class="form-group"><label>School Email</label><input type="email" id="atEmail" placeholder="teacher@muskegonisd.org" /></div>
     <div style="display:flex;gap:10px;margin-top:20px;">
       <button class="btn btn-outline" onclick="closeModal('addTeacherModal')" style="flex:1;">Cancel</button>
-      <button id="atSaveBtn" class="btn btn-primary" onclick="adminSaveTeacher()" style="flex:2;background:#7B1113;border-color:#7B1113;">Create Account</button>
+      <button id="atSaveBtn" class="btn btn-primary" onclick="adminSaveTeacher()" style="flex:2;background:#7B1113;border-color:#7B1113;">Send Invitation →</button>
     </div>
+  </div>
+</div>
+
+<!-- Teacher Registration (invite link landing) -->
+<div class="modal-overlay" id="inviteRegisterOverlay" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);">
+  <div style="background:#fff;border-radius:18px;padding:36px 32px;max-width:420px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,0.4);">
+    <div style="text-align:center;margin-bottom:24px;">
+      <img src="https://i.imgur.com/uDcaTSg.png" style="height:56px;width:56px;object-fit:contain;border-radius:50%;background:#7B1113;padding:6px;border:3px solid #C49A00;margin-bottom:12px;" onerror="this.style.display='none'">
+      <h2 style="color:#7B1113;margin:0;font-size:1.2rem;">Complete Your Registration</h2>
+      <p style="color:#6C757D;font-size:0.82rem;margin-top:6px;">Muskegon High School — Portrait of a Graduate Tracker</p>
+    </div>
+    <div id="inviteError" style="display:none;background:#FEE2E2;color:#7B1113;border-radius:8px;padding:10px 14px;font-size:0.83rem;margin-bottom:14px;"></div>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:0.82rem;font-weight:700;color:#343A40;display:block;margin-bottom:6px;">Your Name</label>
+      <input type="text" id="inviteName" placeholder="e.g. Ms. Johnson" style="width:100%;padding:10px 14px;border:1.5px solid #DEE2E6;border-radius:8px;font-size:0.9rem;">
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="font-size:0.82rem;font-weight:700;color:#343A40;display:block;margin-bottom:6px;">Create Password</label>
+      <div style="position:relative;">
+        <input type="password" id="invitePassword" placeholder="Minimum 6 characters" oninput="checkInvitePw()" style="width:100%;padding:10px 38px 10px 14px;border:1.5px solid #DEE2E6;border-radius:8px;font-size:0.9rem;">
+        <span id="invitePwIcon" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:1rem;">⚪</span>
+      </div>
+      <div style="font-size:0.72rem;color:#aaa;margin-top:4px;">Minimum 6 characters</div>
+    </div>
+    <div style="margin-bottom:22px;">
+      <label style="font-size:0.82rem;font-weight:700;color:#343A40;display:block;margin-bottom:6px;">Confirm Password</label>
+      <div style="position:relative;">
+        <input type="password" id="inviteConfirm" placeholder="Re-enter your password" oninput="checkInvitePw()" style="width:100%;padding:10px 38px 10px 14px;border:1.5px solid #DEE2E6;border-radius:8px;font-size:0.9rem;">
+        <span id="inviteConfirmIcon" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:1rem;">⚪</span>
+      </div>
+    </div>
+    <button onclick="completeInviteRegistration()" style="width:100%;padding:13px;background:#7B1113;color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:0.03em;" id="inviteRegBtn">Create Account →</button>
   </div>
 </div>
 
@@ -2871,48 +2904,121 @@ function adminDeleteTeacher(uid, email, btn) {
   p.then(() => renderTeacherRoster()).catch(err => alert('Error: ' + err.message));
 }
 
+// ─── EMAILJS INIT ─────────────────────────────────────────
+emailjs.init('3rbRfNVKOr0Zrydoj');
+
 function openAddTeacherModal() {
   document.getElementById('addTeacherModal').classList.add('open');
   document.getElementById('atName').value = '';
   document.getElementById('atEmail').value = '';
-  document.getElementById('atPassword').value = '';
   document.getElementById('atError').style.display = 'none';
-  const btn = document.querySelector('#addTeacherModal .auth-submit, #addTeacherModal .btn-primary');
-  if (btn) { btn.textContent = 'Create Account'; btn.disabled = false; }
+  document.getElementById('atSuccess').style.display = 'none';
+  const btn = document.getElementById('atSaveBtn');
+  if (btn) { btn.textContent = 'Send Invitation →'; btn.disabled = false; }
 }
 
 function adminSaveTeacher() {
-  const name     = document.getElementById('atName').value.trim();
-  const email    = document.getElementById('atEmail').value.trim().toLowerCase();
-  const password = document.getElementById('atPassword').value;
-  const errEl    = document.getElementById('atError');
+  const name   = document.getElementById('atName').value.trim();
+  const email  = document.getElementById('atEmail').value.trim().toLowerCase();
+  const errEl  = document.getElementById('atError');
+  const okEl   = document.getElementById('atSuccess');
+  const btn    = document.getElementById('atSaveBtn');
+  errEl.style.display = 'none'; okEl.style.display = 'none';
+  if (!name)  { errEl.textContent = 'Please enter the teacher\'s name.'; errEl.style.display='block'; return; }
+  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.style.display='block'; return; }
+  if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
+
+  // Generate a unique invite token and store in Firestore
+  const token = Math.random().toString(36).slice(2) + Date.now().toString(36);
+  const inviteLink = 'https://virtualinnotech.github.io/MuskegonPOGTracker/?invite=' + token;
+
+  db.collection('invitations').doc(token).set({
+    email, name, token, used: false,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  })
+  .then(() => emailjs.send('service_sxcdcur', 'template_8w40lho', {
+    to_name:      name,
+    to_email:     email,
+    invite_token: token,
+    invite_link:  inviteLink
+  }))
+  .then(() => {
+    okEl.textContent = '✅ Invitation sent to ' + email;
+    okEl.style.display = 'block';
+    if (btn) { btn.textContent = 'Send Another'; btn.disabled = false; }
+    document.getElementById('atName').value = '';
+    document.getElementById('atEmail').value = '';
+    renderTeacherRoster();
+  })
+  .catch(err => {
+    if (btn) { btn.textContent = 'Send Invitation →'; btn.disabled = false; }
+    errEl.textContent = 'Error: ' + (err.text || err.message || JSON.stringify(err));
+    errEl.style.display = 'block';
+  });
+}
+
+// ─── INVITE REGISTRATION FLOW ─────────────────────────────
+function checkInvitePw() {
+  const pw  = document.getElementById('invitePassword').value;
+  const pw2 = document.getElementById('inviteConfirm').value;
+  document.getElementById('invitePwIcon').textContent      = pw.length >= 6 ? '✅' : '⚪';
+  document.getElementById('inviteConfirmIcon').textContent = (pw2.length > 0 && pw === pw2) ? '✅' : '⚪';
+}
+
+function checkInviteToken() {
+  const params = new URLSearchParams(window.location.search);
+  const token  = params.get('invite');
+  if (!token) return;
+  // Validate token exists and is unused
+  db.collection('invitations').doc(token).get().then(doc => {
+    if (!doc.exists || doc.data().used) return; // invalid or already used
+    const data = doc.data();
+    // Pre-fill name if available
+    const nameEl = document.getElementById('inviteName');
+    if (nameEl && data.name) nameEl.value = data.name;
+    // Hide normal auth overlay, show invite registration overlay
+    document.getElementById('authOverlay').classList.add('hidden');
+    const overlay = document.getElementById('inviteRegisterOverlay');
+    overlay.style.display = 'flex';
+    overlay.dataset.token = token;
+    overlay.dataset.email = data.email;
+  }).catch(() => {});
+}
+
+function completeInviteRegistration() {
+  const overlay  = document.getElementById('inviteRegisterOverlay');
+  const token    = overlay.dataset.token;
+  const email    = overlay.dataset.email;
+  const name     = document.getElementById('inviteName').value.trim();
+  const pw       = document.getElementById('invitePassword').value;
+  const pw2      = document.getElementById('inviteConfirm').value;
+  const errEl    = document.getElementById('inviteError');
+  const btn      = document.getElementById('inviteRegBtn');
   errEl.style.display = 'none';
-  if (!name)     { errEl.textContent = 'Please enter a name.'; errEl.style.display='block'; return; }
-  if (!email || !email.includes('@')) { errEl.textContent = 'Please enter a valid email.'; errEl.style.display='block'; return; }
-  if (password.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display='block'; return; }
-  // Use a secondary Firebase app instance so creating a user doesn't sign out the admin
-  let secondaryApp;
-  try { secondaryApp = firebase.app('secondary'); }
-  catch(e) { secondaryApp = firebase.initializeApp(firebaseConfig, 'secondary'); }
-  const secondaryAuth = secondaryApp.auth();
-  const btn = document.getElementById('atSaveBtn');
-  if (btn) { btn.textContent = 'Creating…'; btn.disabled = true; }
-  secondaryAuth.createUserWithEmailAndPassword(email, password)
+  if (!name)         { errEl.textContent = 'Please enter your name.'; errEl.style.display='block'; return; }
+  if (pw.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display='block'; return; }
+  if (pw !== pw2)    { errEl.textContent = 'Passwords do not match.'; errEl.style.display='block'; return; }
+  btn.textContent = 'Creating account…'; btn.disabled = true;
+  auth.createUserWithEmailAndPassword(email, pw)
     .then(cred => cred.user.updateProfile({ displayName: name })
       .then(() => db.collection('teachers').doc(cred.user.uid).set({
         name, email, uid: cred.user.uid,
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       }))
-      .then(() => secondaryAuth.signOut())
+      .then(() => db.collection('invitations').doc(token).update({ used: true }))
     )
     .then(() => {
-      closeModal('addTeacherModal');
-      renderTeacherRoster();
+      overlay.style.display = 'none';
+      // Clean URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+      // onAuthStateChanged fires and logs them in automatically
     })
     .catch(err => {
-      if (btn) { btn.textContent = 'Create Account'; btn.disabled = false; }
+      btn.textContent = 'Create Account →'; btn.disabled = false;
       const c = err.code;
-      errEl.textContent = c === 'auth/email-already-in-use' ? 'An account with this email already exists.' : err.message;
+      errEl.textContent = c === 'auth/email-already-in-use'
+        ? 'An account with this email already exists. Please sign in instead.'
+        : err.message;
       errEl.style.display = 'block';
     });
 }
@@ -2943,7 +3049,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (user) {
       onAuthSuccess(user);
     } else {
-      document.getElementById('authOverlay').classList.remove('hidden');
+      // Check for invite token in URL before showing normal login
+      checkInviteToken();
+      if (!new URLSearchParams(window.location.search).get('invite')) {
+        document.getElementById('authOverlay').classList.remove('hidden');
+      }
       renderStudentTable();
       updateStats();
       document.getElementById('rosterCountDisplay').textContent = students.length;
