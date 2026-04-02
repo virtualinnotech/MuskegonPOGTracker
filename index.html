@@ -2776,26 +2776,51 @@ function doLogout() {
 }
 
 function onAuthSuccess(firebaseUser) {
-  const getName = firebaseUser.displayName
-  ? Promise.resolve(firebaseUser.displayName)
-  : db.collection('teachers').doc(firebaseUser.uid).get().then(doc => doc.exists ? doc.data().name : firebaseUser.email).catch(() => firebaseUser.email);
-  document.getElementById('authOverlay').classList.add('hidden');
-  getName.then(name => { document.getElementById('headerUserLabel').textContent = name; });
-  document.getElementById('logoutBtn').style.display = 'inline-block';
-  // Reset auth form buttons
-  const lb = document.querySelector('#authLoginForm .auth-submit');
-  const rb = document.querySelector('#authRegisterForm .auth-submit');
-  if (lb) { lb.textContent = 'Sign In →'; lb.disabled = false; }
-  if (rb) { rb.textContent = 'Create Account →'; rb.disabled = false; }
-  // Show admin tab only for admin
-  const adminBtn = document.getElementById('adminTabBtn');
-  if (adminBtn) adminBtn.style.display = firebaseUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? 'inline-block' : 'none';
-  // Load shared student data from Firestore
-  loadStudents().then(() => {
-    renderStudentTable();
-    updateStats();
-    document.getElementById('rosterCountDisplay').textContent = students.length;
-    updateAdminStats();
+  const isAdminUser = firebaseUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+
+  // If not admin, verify they still exist in the teachers collection
+  const accessCheck = isAdminUser
+    ? Promise.resolve(true)
+    : db.collection('teachers').where('email', '==', firebaseUser.email.toLowerCase()).get()
+        .then(snap => !snap.empty);
+
+  accessCheck.then(allowed => {
+    if (!allowed) {
+      // Teacher was removed by admin — sign them out
+      auth.signOut().then(() => {
+        document.getElementById('authOverlay').classList.remove('hidden');
+        switchAuthTab('login');
+        const errEl = document.getElementById('loginError');
+        if (errEl) {
+          errEl.textContent = '⛔ Your account access has been removed. Please contact your administrator.';
+          errEl.style.display = 'block';
+        }
+      });
+      return;
+    }
+
+    // Access granted — load the app
+    const getName = firebaseUser.displayName
+      ? Promise.resolve(firebaseUser.displayName)
+      : db.collection('teachers').doc(firebaseUser.uid).get()
+          .then(doc => doc.exists ? doc.data().name : firebaseUser.email)
+          .catch(() => firebaseUser.email);
+
+    document.getElementById('authOverlay').classList.add('hidden');
+    getName.then(name => { document.getElementById('headerUserLabel').textContent = '👤 ' + name; });
+    document.getElementById('logoutBtn').style.display = 'inline-block';
+    const lb = document.querySelector('#authLoginForm .auth-submit');
+    const rb = document.querySelector('#authRegisterForm .auth-submit');
+    if (lb) { lb.textContent = 'Sign In →'; lb.disabled = false; }
+    if (rb) { rb.textContent = 'Create Account →'; rb.disabled = false; }
+    const adminBtn = document.getElementById('adminTabBtn');
+    if (adminBtn) adminBtn.style.display = isAdminUser ? 'inline-block' : 'none';
+    loadStudents().then(() => {
+      renderStudentTable();
+      updateStats();
+      document.getElementById('rosterCountDisplay').textContent = students.length;
+      updateAdminStats();
+    });
   });
 }
 
