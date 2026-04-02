@@ -1067,7 +1067,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 <div class="modal-overlay" id="inviteRegisterOverlay" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#6B0F11 0%,#1A1A2E 60%,#0d0d1a 100%);">
   <div style="background:#fff;border-radius:18px;padding:36px 32px;max-width:420px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,0.4);">
     <div style="text-align:center;margin-bottom:24px;">
-      <img src="https://i.imgur.com/uDcaTSg.png" style="height:56px;width:56px;object-fit:contain;border-radius:50%;background:#ffffff;padding:6px;border:3px solid #C49A00;margin-bottom:12px;" onerror="this.style.display='none'">
+      <img src="https://i.imgur.com/uDcaTSg.png" style="height:56px;width:56px;object-fit:contain;border-radius:50%;background:#7B1113;padding:6px;border:3px solid #C49A00;margin-bottom:12px;" onerror="this.style.display='none'">
       <h2 style="color:#7B1113;margin:0;font-size:1.2rem;">Complete Your Registration</h2>
       <p style="color:#6C757D;font-size:0.82rem;margin-top:6px;">Muskegon High School — Portrait of a Graduate Tracker</p>
     </div>
@@ -2778,8 +2778,14 @@ function doLogout() {
 function onAuthSuccess(firebaseUser) {
   const isAdminUser = firebaseUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 
-  // If not admin, verify they still exist in the teachers collection
-  const accessCheck = isAdminUser
+  // Skip access check if we're mid-invite-registration or account was just created
+  const createdRecently = firebaseUser.metadata &&
+    (Date.now() - new Date(firebaseUser.metadata.creationTime).getTime()) < 30000;
+  const skipCheck = isAdminUser || window._completingInvite || createdRecently;
+  window._completingInvite = false;
+
+  // If not admin and not a fresh account, verify they still exist in teachers collection
+  const accessCheck = skipCheck
     ? Promise.resolve(true)
     : db.collection('teachers').where('email', '==', firebaseUser.email.toLowerCase()).get()
         .then(snap => !snap.empty);
@@ -3024,6 +3030,7 @@ function completeInviteRegistration() {
   if (pw.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display='block'; return; }
   if (pw !== pw2)    { errEl.textContent = 'Passwords do not match.'; errEl.style.display='block'; return; }
   btn.textContent = 'Creating account…'; btn.disabled = true;
+  window._completingInvite = true; // flag to bypass access check during registration
   auth.createUserWithEmailAndPassword(email, pw)
     .then(cred => cred.user.updateProfile({ displayName: name })
       .then(() => db.collection('teachers').doc(cred.user.uid).set({
