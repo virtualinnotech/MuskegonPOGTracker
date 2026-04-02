@@ -1064,7 +1064,7 @@ Taylor Nguyen,10,Problem Solving,Critical Thinking,Troubleshooting,Speaking,...<
 </div>
 
 <!-- Teacher Registration (invite link landing) -->
-<div class="modal-overlay" id="inviteRegisterOverlay" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);">
+<div class="modal-overlay" id="inviteRegisterOverlay" style="display:none;align-items:center;justify-content:center;position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#6B0F11 0%,#1A1A2E 60%,#0d0d1a 100%);">
   <div style="background:#fff;border-radius:18px;padding:36px 32px;max-width:420px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,0.4);">
     <div style="text-align:center;margin-bottom:24px;">
       <img src="https://i.imgur.com/uDcaTSg.png" style="height:56px;width:56px;object-fit:contain;border-radius:50%;background:#7B1113;padding:6px;border:3px solid #C49A00;margin-bottom:12px;" onerror="this.style.display='none'">
@@ -3007,18 +3007,29 @@ function completeInviteRegistration() {
       }))
       .then(() => db.collection('invitations').doc(token).update({ used: true }))
     )
+    .then(() => auth.signOut())
     .then(() => {
       overlay.style.display = 'none';
-      // Clean URL
       window.history.replaceState({}, document.title, window.location.pathname);
-      // onAuthStateChanged fires and logs them in automatically
+      // Show login page with a success message
+      document.getElementById('authOverlay').classList.remove('hidden');
+      switchAuthTab('login');
+      const loginErr = document.getElementById('loginError');
+      if (loginErr) {
+        loginErr.style.display = 'block';
+        loginErr.style.background = '#D1FAE5';
+        loginErr.style.color = '#065F46';
+        loginErr.textContent = '✅ Account created! Please sign in with your new password.';
+      }
     })
     .catch(err => {
       btn.textContent = 'Create Account →'; btn.disabled = false;
       const c = err.code;
-      errEl.textContent = c === 'auth/email-already-in-use'
-        ? 'An account with this email already exists. Please sign in instead.'
-        : err.message;
+      if (c === 'auth/email-already-in-use') {
+        errEl.innerHTML = 'An account with this email already exists. <a href="#" onclick="event.preventDefault();document.getElementById(\'inviteRegisterOverlay\').style.display=\'none\';document.getElementById(\'authOverlay\').classList.remove(\'hidden\');switchAuthTab(\'login\');" style="color:#7B1113;font-weight:700;text-decoration:underline;">Sign in here →</a>';
+      } else {
+        errEl.textContent = err.message;
+      }
       errEl.style.display = 'block';
     });
 }
