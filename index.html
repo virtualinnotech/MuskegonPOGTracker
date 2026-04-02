@@ -1736,9 +1736,9 @@ function renderProfile(idx) {
             <span class="evidence-type-badge etype-${ev.type.toLowerCase().replace(/ /g,'-')}">${ev.type}</span>
             <div style="line-height:1.5;">${ev.description}</div>
             <div class="evidence-meta">
-              <span>📅 ${ev.date}</span>
-              <span>📌 MP ${ev.mp}</span>
-              <span>👤 ${ev.addedBy}</span>
+              <span>${ev.date}</span>
+              <span>${ev.mp}</span>
+              <span>${ev.addedBy}</span>
             </div>
           </div>`).join('');
 
@@ -2277,9 +2277,9 @@ body{font-family:'Segoe UI',Arial,Helvetica,sans-serif;background:#e5e7eb;-webki
 
   <!-- META -->
   <div style="display:flex;gap:32px;padding:9px 28px 8px;border-bottom:1px solid #E5E7EB;font-size:0.78rem;color:#374151;align-items:center;">
-    <span>👤 <strong>Student ID:</strong> ${pseudoId}</span>
-    <span>📅 <strong>Graduation Year:</strong> ${gradYear}</span>
-    <span>📌 <strong>Marking Period:</strong> ${s.mp}</span>
+    <span><strong>Student ID:</strong> ${pseudoId}</span>
+    <span><strong>Graduation Year:</strong> ${gradYear}</span>
+    <span><strong>Marking Period:</strong> ${s.mp}</span>
     <span style="margin-left:auto;font-size:0.68rem;color:#9CA3AF;">Generated ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}</span>
   </div>
 
@@ -2680,9 +2680,9 @@ function openPOGDetail(idx, pi) {
         <span class="evidence-type-badge etype-${ev.type.toLowerCase().replace(/ /g,'-')}">${ev.type}</span>
         <div style="line-height:1.5;">${ev.description}</div>
         <div class="evidence-meta">
-          <span>📅 ${ev.date}</span>
-          <span>📌 MP ${ev.mp}</span>
-          <span>👤 ${ev.addedBy}</span>
+          <span>${ev.date}</span>
+          <span>${ev.mp}</span>
+          <span>${ev.addedBy}</span>
         </div>
       </div>`).join('');
   }
@@ -2811,7 +2811,7 @@ function onAuthSuccess(firebaseUser) {
           .catch(() => firebaseUser.email);
 
     document.getElementById('authOverlay').classList.add('hidden');
-    getName.then(name => { document.getElementById('headerUserLabel').textContent = '👤 ' + name; });
+    getName.then(name => { document.getElementById('headerUserLabel').textContent = name; });
     document.getElementById('logoutBtn').style.display = 'inline-block';
     const lb = document.querySelector('#authLoginForm .auth-submit');
     const rb = document.querySelector('#authRegisterForm .auth-submit');
