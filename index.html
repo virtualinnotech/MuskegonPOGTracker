@@ -2811,7 +2811,7 @@ function onAuthSuccess(firebaseUser) {
           .catch(() => firebaseUser.email);
 
     document.getElementById('authOverlay').classList.add('hidden');
-    getName.then(name => { document.getElementById('headerUserLabel').textContent = '👤 ' + name; });
+    getName.then(name => { document.getElementById('headerUserLabel').textContent = 'https://i.imgur.com/BTpRelf.png' + name; });
     document.getElementById('logoutBtn').style.display = 'inline-block';
     const lb = document.querySelector('#authLoginForm .auth-submit');
     const rb = document.querySelector('#authRegisterForm .auth-submit');
