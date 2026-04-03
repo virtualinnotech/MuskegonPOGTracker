@@ -2768,6 +2768,15 @@ function doRegister() {
   // onAuthStateChanged fires automatically on success — no need to call onAuthSuccess here
 }
 
+let _idleTimer;
+function resetIdleTimer() {
+  clearTimeout(_idleTimer);
+  _idleTimer = setTimeout(() => auth.signOut(), 10 * 60 * 1000); // 10 minutes
+}
+['click','mousemove','keydown','touchstart','scroll'].forEach(e =>
+  document.addEventListener(e, resetIdleTimer, { passive: true })
+);
+  
 function doLogout() {
   auth.signOut();
   // onAuthStateChanged handles UI reset
@@ -2824,6 +2833,7 @@ function onAuthSuccess(firebaseUser) {
       updateStats();
       document.getElementById('rosterCountDisplay').textContent = students.length;
       updateAdminStats();
+      resetIdleTimer();
     });
   });
 }
